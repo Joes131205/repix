@@ -31,6 +31,8 @@ function SignUp() {
         confirmPassword: "",
     });
 
+    const [error, setError] = useState("");
+
     async function storeUsername(uid, username) {
         if (!username) {
             username = `user_${uid.slice(1, 5)}`;
@@ -56,17 +58,23 @@ function SignUp() {
 
     async function signUpUser(e) {
         e.preventDefault();
+        const { username, email, password, confirmPassword } = data;
         if (password === confirmPassword) {
-            const { username, email, password } = data;
             await createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const user = userCredential.user;
                     await storeUsername(user.uid, username);
                     await storeDefaultProfilePicture(user.uid);
+                    await sendEmailVerification();
                 })
                 .catch((error) => {
                     const errorCode = error.code;
-                    const errorMessage = error.message;
+                    const words = errorCode.split("/")[1].replaceAll("-", " ");
+
+                    const formattedErrorMessage =
+                        words[0].toUpperCase() + words.slice(1);
+
+                    setError(formattedErrorMessage);
                 });
         }
     }
@@ -75,11 +83,16 @@ function SignUp() {
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            await storeUsername(user.uid, username);
+            await storeUsername(user.uid);
             await storeDefaultProfilePicture(user.uid);
         } catch (error) {
             const errorCode = error.code;
-            const errorMessage = error.message;
+            const words = errorCode.split("/")[1].replaceAll("-", " ");
+
+            const formattedErrorMessage =
+                words[0].toUpperCase() + words.slice(1);
+
+            setError(formattedErrorMessage);
         }
     }
 
@@ -150,6 +163,7 @@ function SignUp() {
                 </div>
                 <input type="submit" value="Submit" />
             </form>
+            <p>{error}</p>
             <button onClick={signUpUserWithGoogle}>Sign Up With Google</button>
             <Link to="/signin">Already have an account?</Link>
         </div>
