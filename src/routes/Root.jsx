@@ -6,8 +6,18 @@ import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import {
+    doc,
+    collection,
+    getDoc,
+    getFirestore,
+    query,
+    where,
+} from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
+
+import Photo from "../components/Photo";
+import Comment from "../components/Comment";
 
 function Root() {
     const [username, setUsername] = useState("");
@@ -18,6 +28,7 @@ function Root() {
     const navigate = useNavigate();
     const db = getFirestore(app);
     const storage = getStorage(app);
+
     async function fetchUserName(uid) {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
@@ -46,6 +57,8 @@ function Root() {
     return (
         <div>
             <NavBar username={username} profilePicture={profilePicture} />
+            <Photo />
+            <Comment />
         </div>
     );
 }
