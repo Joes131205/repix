@@ -13,6 +13,8 @@ import {
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
+import { toast, Bounce } from "react-toastify";
+
 import { useNavigate, Link } from "react-router-dom";
 
 function SignUp() {
@@ -66,6 +68,17 @@ function SignUp() {
                     await storeUsername(user.uid, username);
                     await storeDefaultProfilePicture(user.uid);
                     await sendEmailVerification();
+                    toast.success("Signed Up! Email verification sent!", {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                        transition: Bounce,
+                    });
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -85,6 +98,17 @@ function SignUp() {
             const user = result.user;
             await storeUsername(user.uid);
             await storeDefaultProfilePicture(user.uid);
+            toast.success("Signed Up! Email verification sent!", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
         } catch (error) {
             const errorCode = error.code;
             const words = errorCode.split("/")[1].replaceAll("-", " ");

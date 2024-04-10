@@ -3,11 +3,17 @@ import app from "../firebase";
 import { useEffect, useState } from "react";
 
 import {
+    getAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
 } from "firebase/auth";
+
+import { toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { useNavigate, Link } from "react-router-dom";
 
 function SignIn() {
     const [data, setData] = useState({
@@ -27,6 +33,17 @@ function SignIn() {
     async function signInUserWithGoogle() {
         try {
             await signInWithPopup(auth, provider);
+            toast.success("Signed In!", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
         } catch (error) {
             const errorCode = error.code;
             const words = errorCode.split("/")[1].replaceAll("-", " ");
@@ -41,6 +58,17 @@ function SignIn() {
     async function signInUser() {
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
+            toast.success("Signed In!", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
         } catch (error) {
             const errorCode = error.code;
             const words = errorCode.split("/")[1].replaceAll("-", " ");
