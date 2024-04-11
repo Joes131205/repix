@@ -26,6 +26,16 @@ function App() {
     const [username, setUsername] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
     const [uid, setUid] = useState("");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const handleSignupSuccess = () => {
+        setIsLoggedIn(true);
+    };
+
+    const handleSignout = () => {
+        setIsLoggedIn(false);
+    };
+
     const navigate = useNavigate();
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -37,8 +47,9 @@ function App() {
                 setUid(user.uid);
                 await fetchUserName(user.uid);
                 await fetchProfilePicture(user.uid);
+                setIsLoggedIn(true);
             } else {
-                navigate("/signin");
+                navigate("/signup");
             }
             return unsubscribe;
         });
@@ -51,7 +62,6 @@ function App() {
         const docSnap = await getDoc(docRef);
         const data = docSnap.data();
         if (data) {
-            // Check if data exists to prevent errors
             setUsername(data.username);
         } else {
             console.warn("Username not found for:", uid);
@@ -70,12 +80,22 @@ function App() {
 
     return (
         <div>
-            <NavBar username={username} profilePicture={profilePicture} />
+            <NavBar
+                username={username}
+                profilePicture={profilePicture}
+                isLoggedIn={isLoggedIn}
+                onSignoutSuccess={handleSignout}
+            />
             <Routes>
                 <Route path="/" element={<Root />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/setting" element={<Setting />} />
+                <Route
+                    path="/signin"
+                    element={<SignIn onSigninSuccess={handleSignupSuccess} />}
+                />
+                <Route
+                    path="/signup"
+                    element={<SignUp onSignupSuccess={handleSignupSuccess} />}
+                />
                 <Route path="/upload" element={<Upload />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route
@@ -88,6 +108,7 @@ function App() {
                         />
                     }
                 />
+                <Route path="/setting" element={<Setting />} />
                 <Route path="*" element={<ErrorPage />} />
             </Routes>
             <ToastContainer />

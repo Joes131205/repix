@@ -12,7 +12,7 @@ function NavBar(prop) {
 
     return (
         <>
-            {auth.currentUser && (
+            {prop.isLoggedIn && (
                 <div className="flex gap-12 items-center">
                     <div>
                         <Link to="/profile" className="flex gap-5 items-center">
@@ -28,7 +28,12 @@ function NavBar(prop) {
                     <Link to="/leaderboard">Leaderboard</Link>
                     <Link to="/setting">Setting</Link>
                     <button
-                        onClick={() => signOut(auth).then(navigate("/signin"))}
+                        onClick={() =>
+                            signOut(auth).then(() => {
+                                navigate("/signin");
+                                prop.onSignoutSuccess();
+                            })
+                        }
                     >
                         Sign Out
                     </button>

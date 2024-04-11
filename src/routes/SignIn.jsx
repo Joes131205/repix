@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useNavigate, Link } from "react-router-dom";
 
-function SignIn() {
+function SignIn(prop) {
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -44,6 +44,7 @@ function SignIn() {
                 theme: "colored",
                 transition: Bounce,
             });
+            prop.onSignupSuccess();
         } catch (error) {
             const errorCode = error.code;
             const words = errorCode.split("/")[1].replaceAll("-", " ");
@@ -69,6 +70,7 @@ function SignIn() {
                 theme: "colored",
                 transition: Bounce,
             });
+            prop.onSignupSuccess();
         } catch (error) {
             const errorCode = error.code;
             const words = errorCode.split("/")[1].replaceAll("-", " ");

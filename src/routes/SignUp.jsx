@@ -17,7 +17,7 @@ import { toast, Bounce } from "react-toastify";
 
 import { useNavigate, Link } from "react-router-dom";
 
-function SignUp() {
+function SignUp(prop) {
     const auth = getAuth(app);
     auth.useDeviceLanguage();
 
@@ -35,14 +35,20 @@ function SignUp() {
 
     const [error, setError] = useState("");
 
-    async function storeUsername(uid, username) {
+    async function storeUsernameAndData(uid, username) {
         if (!username) {
             username = `user_${uid.slice(1, 5)}`;
         }
         try {
             const db = getFirestore(app);
             const docRef = doc(db, "users", uid);
-            await setDoc(docRef, { username });
+            await setDoc(docRef, {
+                username,
+                uploaded: 0,
+                reputation: 0,
+                bestRatedPhoto: "",
+                totalPhotosRated: 0,
+            });
         } catch (err) {
             console.error("Error adding document: ", err);
         }
@@ -65,7 +71,7 @@ function SignUp() {
             await createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const user = userCredential.user;
-                    await storeUsername(user.uid, username);
+                    await storeUsernameAndData(user.uid, username);
                     await storeDefaultProfilePicture(user.uid);
                     await sendEmailVerification();
                     toast.success("Signed Up! Email verification sent!", {
@@ -79,6 +85,7 @@ function SignUp() {
                         theme: "colored",
                         transition: Bounce,
                     });
+                    prop.onSignupSuccess();
                 })
                 .catch((error) => {
                     const errorCode = error.code;
@@ -96,7 +103,7 @@ function SignUp() {
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            await storeUsername(user.uid);
+            await storeUsernameAndData(user.uid);
             await storeDefaultProfilePicture(user.uid);
             toast.success("Signed Up! Email verification sent!", {
                 position: "bottom-right",
@@ -109,6 +116,7 @@ function SignUp() {
                 theme: "colored",
                 transition: Bounce,
             });
+            prop.onSignupSuccess();
         } catch (error) {
             const errorCode = error.code;
             const words = errorCode.split("/")[1].replaceAll("-", " ");
