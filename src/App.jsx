@@ -20,12 +20,17 @@ import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 function App() {
-    const [username, setUsername] = useState("");
-    const [profilePicture, setProfilePicture] = useState("");
-    const [uid, setUid] = useState("");
+    const [data, setData] = useState({
+        bestRatedPhoto: "",
+        reputation: 0,
+        totalPhotosRated: 0,
+        uploaded: 0,
+        username: "",
+        profilePicture: "",
+    });
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleSignupSuccess = () => {
@@ -44,10 +49,9 @@ function App() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                setUid(user.uid);
-                await fetchUserName(user.uid);
-                await fetchProfilePicture(user.uid);
+                await fetchData(user.uid);
                 setIsLoggedIn(true);
+                console.log(data);
             } else {
                 navigate("/signup");
             }
@@ -57,32 +61,23 @@ function App() {
         return () => unsubscribe();
     }, []);
 
-    async function fetchUserName(uid) {
+    async function fetchData(uid) {
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
-        const data = docSnap.data();
-        if (data) {
-            setUsername(data.username);
-        } else {
-            console.warn("Username not found for:", uid);
-        }
-    }
+        const userData = docSnap.data();
 
-    async function fetchProfilePicture(uid) {
         const storageRef = ref(storage, `profile-pictures/${uid}.png`);
-        try {
-            const url = await getDownloadURL(storageRef);
-            setProfilePicture(url);
-        } catch (error) {
-            console.warn("Error fetching profile picture:", error);
-        }
+        const url = await getDownloadURL(storageRef);
+        userData.profilePicture = url;
+
+        setData({ ...userData });
     }
 
     return (
         <div>
             <NavBar
-                username={username}
-                profilePicture={profilePicture}
+                username={data.username}
+                profilePicture={data.profilePicture}
                 isLoggedIn={isLoggedIn}
                 onSignoutSuccess={handleSignout}
             />
@@ -102,9 +97,12 @@ function App() {
                     path="/profile"
                     element={
                         <Profile
-                            username={username}
-                            profilePicture={profilePicture}
-                            uid={uid}
+                            username={data.username}
+                            profilePicture={data.profilePicture}
+                            reputation={data.reputation}
+                            totalPhotosRated={data.totalPhotosRated}
+                            bestRatedPhoto={data.bestRatedPhoto}
+                            uploaded={data.uploaded}
                         />
                     }
                 />

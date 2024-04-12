@@ -1,13 +1,4 @@
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-
-import app from "../firebase";
-
 function Profile(prop) {
-    const db = getFirestore(app);
-    const docRef = doc(db, "users", prop.uid);
-    const docSnap = getDoc(docRef);
-    const data = docSnap.data();
-
     return (
         <div>
             <h1>Profile</h1>
@@ -20,10 +11,10 @@ function Profile(prop) {
                 <h2>{prop.username}</h2>
             </div>
             <div>
-                <p>Total reputation: </p>
-                <p>Total photos rated: </p>
-                <p>Photos uploaded: </p>
-                <p>Best rating photo: </p>
+                <p>Total reputation: {prop.reputation}</p>
+                <p>Total photos rated: {prop.totalPhotosRated}</p>
+                <p>Photos uploaded: {prop.uploaded}</p>
+                <p>Best rated photo: {prop.bestRatedPhoto || "None yet"}</p>
             </div>
         </div>
     );
