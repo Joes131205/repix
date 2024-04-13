@@ -13,7 +13,7 @@ import {
 import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignIn(prop) {
     const [data, setData] = useState({

@@ -31,6 +31,8 @@ function App() {
         username: "",
         profilePicture: "",
     });
+
+    const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleSignupSuccess = () => {
@@ -49,6 +51,7 @@ function App() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
+                setUid(user.uid);
                 await fetchData(user.uid);
                 setIsLoggedIn(true);
                 console.log(data);
@@ -91,7 +94,7 @@ function App() {
                     path="/signup"
                     element={<SignUp onSignupSuccess={handleSignupSuccess} />}
                 />
-                <Route path="/upload" element={<Upload />} />
+                <Route path="/upload" element={<Upload uid={uid} />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route
                     path="/profile"
