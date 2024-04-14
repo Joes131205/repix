@@ -4,17 +4,28 @@ import {
     collection,
     serverTimestamp,
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import { useState } from "react";
 
-function Upload() {
-    const db = getFirestore();
+import app from "../firebase";
+
+function Upload(prop) {
+    const db = getFirestore(app);
+    const storage = getStorage(app);
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
+    async function uploadPhoto() {
+        console.log(prop.uid);
+        const photoRef = ref(storage, `photos/${prop.uid}.jpg`);
 
-    async function uploadPhoto(prop) {
+        await uploadBytes(photoRef, photo);
+
+        const photoUrl = await getDownloadURL(photoRef);
+
         const docCollection = collection(db, "photos");
         await addDoc(docCollection, {
-            photo: photo,
+            photoUrl,
             uid: prop.uid,
             createdAt: serverTimestamp(),
         });
@@ -28,16 +39,13 @@ function Upload() {
             setPhotoReview(reader.result);
         };
 
-        const newFilename = `${auth.currentUser.uid}.${file.name
-            .split(".")
-            .pop()}`;
+        const newFilename = `${prop.uid}.${file.name.split(".").pop()}`;
         const newBlob = new Blob([file], {
             type: file.type,
         });
 
         newBlob.name = newFilename;
         setPhoto(newBlob);
-        reader.readAsDataURL(file);
     }
 
     return (

@@ -25,6 +25,7 @@ function NavBar(prop) {
                         </Link>
                     </div>
                     <Link to="/">Home</Link>
+                    <Link to="/upload">Upload</Link>
                     <Link to="/leaderboard">Leaderboard</Link>
                     <Link to="/setting">Setting</Link>
                     <button

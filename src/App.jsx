@@ -54,7 +54,6 @@ function App() {
                 setUid(user.uid);
                 await fetchData(user.uid);
                 setIsLoggedIn(true);
-                console.log(data);
             } else {
                 navigate("/signup");
             }
