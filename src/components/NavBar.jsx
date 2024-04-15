@@ -17,7 +17,10 @@ function NavBar(prop) {
                     <div>
                         <Link to="/profile" className="flex gap-5 items-center">
                             <img
-                                src={prop.profilePicture}
+                                src={
+                                    prop.profilePicture ||
+                                    "public/images/placeholder.png"
+                                }
                                 alt="Profile Picture"
                                 className="w-10 h-10 rounded-full"
                             />

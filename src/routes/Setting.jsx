@@ -108,7 +108,9 @@ function Setting() {
             <h1>Setting</h1>
             <div className="w-screen flex items-center gap-5">
                 <img
-                    src={profilePictureReview}
+                    src={
+                        profilePictureReview || "public/images/placeholder.png"
+                    }
                     alt="Profile Picture"
                     className="w-10 h-10 rounded-full"
                 />
