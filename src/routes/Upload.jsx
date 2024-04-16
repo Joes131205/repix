@@ -43,6 +43,8 @@ function Upload(prop) {
                 uid: prop.uid,
                 createdAt: serverTimestamp(),
                 reputation: 0,
+                rated: [],
+                comments: [],
             });
 
             toast.success("Uploaded!", {
