@@ -10,15 +10,16 @@ import {
 import { useEffect, useState } from "react";
 
 import app from "../firebase";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+import Stars from "./Stars";
 
 function Photo() {
     const [currentPhoto, setCurrentPhoto] = useState({});
+    const [uid, setUid] = useState("");
 
     const db = getFirestore(app);
 
-    const user = getAuth();
-    const uid = user.currentUser.uid;
     async function fetchRandomPhoto() {
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
@@ -31,14 +32,32 @@ function Photo() {
 
         const randomPhotoDoc = querySnapshot.docs[randomIndex];
 
-        const data = await randomPhotoDoc.data();
+        const data = randomPhotoDoc.data();
 
-        console.log(data);
+        if (uid === data.uid) {
+            fetchRandomPhoto();
+        }
+
+        setCurrentPhoto(data);
+        console.log(currentPhoto);
     }
+
     useEffect(() => {
-        fetchRandomPhoto();
+        const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {
+            if (user) {
+                setUid(user.uid);
+                fetchRandomPhoto();
+            }
+        });
+        return unsubscribe;
     }, []);
-    return <div></div>;
+    return (
+        <div>
+            <h1>Photos</h1>
+            <img src={currentPhoto.photoUrl} alt="" />
+            <Stars />
+        </div>
+    );
 }
 
 export default Photo;
