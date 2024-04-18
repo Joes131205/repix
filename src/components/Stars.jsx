@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-function Stars() {
-    const [rating, setRating] = useState(0);
+function Stars(prop) {
     const stars = new Array(5).fill("★");
     return (
         <div className="flex items-center justify-center text-5xl">
@@ -9,11 +8,11 @@ function Stars() {
                 <button
                     key={index}
                     className={
-                        rating >= index + 1
+                        prop.rating >= index + 1
                             ? "text-yellow-500"
                             : "text-gray-300"
                     }
-                    onClick={() => setRating(index + 1)}
+                    onClick={() => prop.setRating(index + 1)}
                 >
                     {star}
                 </button>
