@@ -8,6 +8,8 @@ import {
     getDocs,
     collection,
     getDoc,
+    updateDoc,
+    doc,
 } from "firebase/firestore";
 
 import { useEffect, useState } from "react";
@@ -40,10 +42,24 @@ function Root() {
 
         if (uid === data.uid) {
             fetchRandomPhoto();
+        } else {
+            setCurrentPhoto({ ...data, id: randomPhotoDoc.id });
         }
+    }
 
-        setCurrentPhoto(data);
-        console.log(data);
+    async function updatePhoto() {
+        console.log(currentPhoto);
+        const ref = doc(db, "photos", currentPhoto.id);
+        const updatedRated = [...currentPhoto.rated, uid];
+        try {
+            await updateDoc(ref, {
+                reputation: currentPhoto.reputation,
+                rated: updatedRated,
+            });
+            console.log("Photo reputation updated successfully!");
+        } catch (error) {
+            console.error("Error updating photo reputation:", error);
+        }
     }
 
     async function rate() {
@@ -59,8 +75,13 @@ function Root() {
             ratingAdjustments[rating] || ratingAdjustments.default;
         const currRating = adjustmentFunction();
 
-        console.log(currRating);
-        return currRating;
+        setCurrentPhoto({
+            ...currentPhoto,
+            reputation: currentPhoto.reputation + currRating,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await updatePhoto();
+        console.log("updated");
     }
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {

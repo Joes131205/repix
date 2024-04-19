@@ -19,7 +19,7 @@ function NavBar(prop) {
                             <img
                                 src={
                                     prop.profilePicture ||
-                                    "public/images/placeholder.png"
+                                    "/images/placeholder.png"
                                 }
                                 alt="Profile Picture"
                                 className="w-10 h-10 rounded-full"

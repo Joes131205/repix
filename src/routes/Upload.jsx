@@ -96,7 +96,7 @@ function Upload(prop) {
             <h1>Upload Photos</h1>
             <input type="file" onChange={previewImage} />
             <img
-                src={photoReview || "public/images/placeholder.png"}
+                src={photoReview || "/images/placeholder.png"}
                 className="w-96 h-96"
             />
             <button onClick={uploadPhoto}>Upload!</button>
