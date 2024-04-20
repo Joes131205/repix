@@ -27,6 +27,7 @@ function Root() {
     const db = getFirestore(app);
 
     async function fetchRandomPhoto() {
+        console.log("fetching...");
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
 
@@ -48,14 +49,11 @@ function Root() {
     }
 
     async function updatePhoto() {
-        console.log(currentPhoto);
         const ref = doc(db, "photos", currentPhoto.id);
-        const updatedRated = [...currentPhoto.rated, uid];
+        console.log(currentPhoto);
         try {
-            await updateDoc(ref, {
-                reputation: currentPhoto.reputation,
-                rated: updatedRated,
-            });
+            await updateDoc(ref, { ...currentPhoto });
+            await fetchRandomPhoto();
             console.log("Photo reputation updated successfully!");
         } catch (error) {
             console.error("Error updating photo reputation:", error);
@@ -63,26 +61,34 @@ function Root() {
     }
 
     async function rate() {
-        const ratingAdjustments = {
-            1: () => Math.floor(Math.random() * -9) - 5,
-            2: () => Math.floor(Math.random() * -4) - 1,
-            3: () => 0,
-            4: () => Math.floor(Math.random() * 6) + 1,
-            default: () => Math.floor(Math.random() * 11) + 1,
-        };
+        if (rating) {
+            const ratingAdjustments = {
+                1: () => Math.floor(Math.random() * (10 - 6 + 1)) + 6, // -6 to -10
+                2: () => Math.floor(Math.random() * (5 - 1 + 1)) + 1, // -1 to -5
+                3: () => 0,
+                4: () => Math.floor(Math.random() * (5 + 1)) + 1, // 1 to 5
+                5: () => Math.floor(Math.random() * (10 - 6 + 1)) + 6, // 6 to 10
+            };
 
-        const adjustmentFunction =
-            ratingAdjustments[rating] || ratingAdjustments.default;
-        const currRating = adjustmentFunction();
+            const adjustmentFunction =
+                ratingAdjustments[rating] || ratingAdjustments.default;
+            const currRating = adjustmentFunction();
 
-        setCurrentPhoto({
-            ...currentPhoto,
-            reputation: currentPhoto.reputation + currRating,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        await updatePhoto();
-        console.log("updated");
+            const updatedRated = [...currentPhoto.rated, uid];
+            const updatedData = {
+                ...currentPhoto,
+                reputation: currentPhoto.reputation + currRating,
+                rated: updatedRated,
+            };
+            setCurrentPhoto(updatedData);
+            await updatePhoto();
+        }
     }
+
+    useEffect(() => {
+        console.log("currentPhoto");
+    }, [currentPhoto]);
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {
             if (user) {
@@ -92,6 +98,7 @@ function Root() {
         });
         return unsubscribe;
     }, []);
+
     return (
         <div>
             <Photo url={currentPhoto.photoUrl} />
