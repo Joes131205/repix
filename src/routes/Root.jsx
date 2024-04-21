@@ -3,13 +3,11 @@ import Comment from "../components/Comment";
 
 import {
     getFirestore,
-    query,
-    where,
     getDocs,
     collection,
-    getDoc,
     updateDoc,
     doc,
+    getDoc,
 } from "firebase/firestore";
 
 import { useEffect, useState } from "react";
@@ -53,13 +51,41 @@ function Root() {
         console.log(currentPhoto);
         try {
             await updateDoc(ref, { ...currentPhoto });
-            await fetchRandomPhoto();
             console.log("Photo reputation updated successfully!");
+        } catch (error) {
+            console.error("Error updating photo reputation:", error);
+        }
+        await fetchRandomPhoto();
+        setRating(0);
+    }
+
+    async function updateProfile() {
+        try {
+            const docRef = doc(db, "users", uid);
+            const docSnap = await getDoc(docRef);
+            const data = docSnap.data();
+            await updateDoc(docRef, {
+                ...data,
+                totalPhotosRated: data.totalPhotosRated++,
+            });
         } catch (error) {
             console.error("Error updating photo reputation:", error);
         }
     }
 
+    async function updateOtherProfile(rating) {
+        try {
+            const docRef = doc(db, "users", currentPhoto.uid);
+            const docSnap = await getDoc(docRef);
+            const data = docSnap.data();
+            await updateDoc(docRef, {
+                ...data,
+                reputation: data.reputation + rating,
+            });
+        } catch (error) {
+            console.error("Error updating photo reputation:", error);
+        }
+    }
     async function rate() {
         if (rating) {
             const ratingAdjustments = {
@@ -82,6 +108,8 @@ function Root() {
             };
             setCurrentPhoto(updatedData);
             await updatePhoto();
+            await updateProfile();
+            await updateOtherProfile(currRating);
         }
     }
 

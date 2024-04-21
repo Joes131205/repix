@@ -4,7 +4,7 @@ function Profile(prop) {
             <h1>Profile</h1>
             <div>
                 <img
-                    src={prop.profilePicture || "public/images/placeholder.png"}
+                    src={prop.profilePicture || "/images/placeholder.png"}
                     alt="Profile Picture"
                     className="w-32 h-32 rounded-full"
                 />
