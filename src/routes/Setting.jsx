@@ -1,5 +1,5 @@
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 
@@ -36,8 +36,9 @@ function Setting() {
 
     async function changeUsername() {
         try {
-            await setDoc(doc(db, "users", auth.currentUser.uid), {
-                username,
+            const userRef = doc(db, "users", auth.currentUser.uid);
+            await updateDoc(userRef, {
+                username: username,
             });
             toast.success("Changed Username!", {
                 position: "bottom-right",

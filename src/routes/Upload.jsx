@@ -3,6 +3,9 @@ import {
     addDoc,
     collection,
     serverTimestamp,
+    doc,
+    getDoc,
+    updateDoc,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -17,6 +20,20 @@ function Upload(prop) {
     const storage = getStorage(app);
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
+
+    async function incrementUpload() {
+        try {
+            const docRef = doc(db, "users", prop.uid);
+            const docSnap = await getDoc(docRef);
+            const data = docSnap.data();
+            await updateDoc(docRef, {
+                uploaded: data.uploaded + 1,
+            });
+            console.log("updated");
+        } catch (error) {
+            console.error("Error updating photo reputation:", error);
+        }
+    }
 
     async function uploadPhoto() {
         try {
@@ -72,6 +89,7 @@ function Upload(prop) {
                 transition: Bounce,
             });
         }
+        incrementUpload();
     }
 
     async function previewImage(e) {
@@ -94,7 +112,7 @@ function Upload(prop) {
     return (
         <div>
             <h1>Upload Photos</h1>
-            <input type="file" onChange={previewImage} />
+            <input type="file" onChange={previewImage} accept="image/png" />
             <img
                 src={photoReview || "/images/placeholder.png"}
                 className="w-96 h-96"

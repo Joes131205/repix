@@ -25,7 +25,6 @@ function Root() {
     const db = getFirestore(app);
 
     async function fetchRandomPhoto() {
-        console.log("fetching...");
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
 
@@ -36,21 +35,25 @@ function Root() {
         const randomIndex = Math.floor(Math.random() * querySnapshot.size);
 
         const randomPhotoDoc = querySnapshot.docs[randomIndex];
-
+        console.log(randomIndex);
         const data = randomPhotoDoc.data();
-
+        console.log(uid === data.uid);
         if (uid === data.uid) {
             fetchRandomPhoto();
         } else {
-            setCurrentPhoto({ ...data, id: randomPhotoDoc.id });
+            console.log(data.photoUrl);
+            setCurrentPhoto({
+                ...data,
+                id: randomPhotoDoc.id,
+            });
         }
     }
 
-    async function updatePhoto() {
+    async function updatePhoto(data) {
         const ref = doc(db, "photos", currentPhoto.id);
         console.log(currentPhoto);
         try {
-            await updateDoc(ref, { ...currentPhoto });
+            await updateDoc(ref, data);
             console.log("Photo reputation updated successfully!");
         } catch (error) {
             console.error("Error updating photo reputation:", error);
@@ -65,8 +68,7 @@ function Root() {
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
             await updateDoc(docRef, {
-                ...data,
-                totalPhotosRated: data.totalPhotosRated++,
+                totalPhotosRated: data.totalPhotosRated + 1,
             });
         } catch (error) {
             console.error("Error updating photo reputation:", error);
@@ -83,7 +85,7 @@ function Root() {
                 reputation: data.reputation + rating,
             });
         } catch (error) {
-            console.error("Error updating photo reputation:", error);
+            console.error("Error updating other profile reputation:", error);
         }
     }
     async function rate() {
@@ -106,16 +108,15 @@ function Root() {
                 reputation: currentPhoto.reputation + currRating,
                 rated: updatedRated,
             };
-            setCurrentPhoto(updatedData);
-            await updatePhoto();
+            await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
         }
     }
 
     useEffect(() => {
-        console.log("currentPhoto");
-    }, [currentPhoto]);
+        console.log(currentPhoto);
+    }, [currentPhoto, currentPhoto.uniqueId]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {
