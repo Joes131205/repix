@@ -1,6 +1,7 @@
 import {
     getFirestore,
     addDoc,
+    setDoc,
     collection,
     serverTimestamp,
     doc,
@@ -49,12 +50,15 @@ function Upload(prop) {
                 transition: Bounce,
             });
 
-            const photoRef = ref(storage, `photos/${prop.uid}.jpg`);
+            const photoRef = ref(
+                storage,
+                `photos/${prop.uid}/${prop.uid}.${photo.name.split(".").pop()}`
+            );
             await uploadBytes(photoRef, photo);
 
             const photoUrl = await getDownloadURL(photoRef);
 
-            const docCollection = collection(db, "photos");
+            const docCollection = collection(db, "photos", prop.uid, prop.uid);
             await addDoc(docCollection, {
                 photoUrl,
                 uid: prop.uid,

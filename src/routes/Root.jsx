@@ -88,6 +88,7 @@ function Root() {
             console.error("Error updating other profile reputation:", error);
         }
     }
+
     async function rate() {
         if (rating) {
             const ratingAdjustments = {
