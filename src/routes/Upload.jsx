@@ -52,13 +52,13 @@ function Upload(prop) {
 
             const photoRef = ref(
                 storage,
-                `photos/${prop.uid}/${prop.uid}.${photo.name.split(".").pop()}`
+                `photos/${prop.uid}.${photo.name.split(".").pop()}`
             );
             await uploadBytes(photoRef, photo);
 
             const photoUrl = await getDownloadURL(photoRef);
 
-            const docCollection = collection(db, "photos", prop.uid, prop.uid);
+            const docCollection = collection(db, "photos");
             await addDoc(docCollection, {
                 photoUrl,
                 uid: prop.uid,

@@ -8,7 +8,7 @@ function Photo(prop) {
     return (
         <div>
             <h1>Photos</h1>
-            <img src={url || "/images/placeholder.png"} />
+            <img src={url || "/images/placeholder.png"} className="w-52 " />
         </div>
     );
 }

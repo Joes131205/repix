@@ -21,14 +21,17 @@ function Root() {
     const [currentPhoto, setCurrentPhoto] = useState({});
     const [uid, setUid] = useState("");
     const [rating, setRating] = useState(0);
+    const [isLoading, setIsLoading] = useState(true); // Add a new state variable for loading
 
     const db = getFirestore(app);
 
     async function fetchRandomPhoto() {
+        setIsLoading(true);
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
 
         if (querySnapshot.size === 0) {
+            setIsLoading(false);
             return;
         }
 
@@ -46,6 +49,7 @@ function Root() {
                 ...data,
                 id: randomPhotoDoc.id,
             });
+            setIsLoading(false);
         }
     }
 
@@ -58,7 +62,6 @@ function Root() {
         } catch (error) {
             console.error("Error updating photo reputation:", error);
         }
-        await fetchRandomPhoto();
         setRating(0);
     }
 
@@ -112,12 +115,13 @@ function Root() {
             await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
+            await fetchRandomPhoto();
         }
     }
 
     useEffect(() => {
         console.log(currentPhoto);
-    }, [currentPhoto, currentPhoto.uniqueId]);
+    }, [currentPhoto]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {
@@ -131,9 +135,15 @@ function Root() {
 
     return (
         <div>
-            <Photo url={currentPhoto.photoUrl} />
+            {isLoading ? (
+                <div>Loading...</div>
+            ) : (
+                <Photo url={currentPhoto.photoUrl} />
+            )}{" "}
             <Stars setRating={setRating} rating={rating} />
-            <button onClick={rate}>Rate!</button>
+            <button onClick={rate} disabled={isLoading}>
+                Rate!
+            </button>{" "}
             <Comment />
         </div>
     );
