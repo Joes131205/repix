@@ -50,10 +50,11 @@ function Upload(prop) {
                 transition: Bounce,
             });
 
-            const photoRef = ref(
-                storage,
-                `photos/${prop.uid}.${photo.name.split(".").pop()}`
-            );
+            const timestamp = Date.now();
+            const filename = `${timestamp}-${prop.uid}.${photo.name
+                .split(".")
+                .pop()}`;
+            const photoRef = ref(storage, `photos/${filename}`);
             await uploadBytes(photoRef, photo);
 
             const photoUrl = await getDownloadURL(photoRef);

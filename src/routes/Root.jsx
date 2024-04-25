@@ -21,7 +21,7 @@ function Root() {
     const [currentPhoto, setCurrentPhoto] = useState({});
     const [uid, setUid] = useState("");
     const [rating, setRating] = useState(0);
-    const [isLoading, setIsLoading] = useState(true); // Add a new state variable for loading
+    const [isLoading, setIsLoading] = useState(true);
 
     const db = getFirestore(app);
 
@@ -40,15 +40,16 @@ function Root() {
         const randomPhotoDoc = querySnapshot.docs[randomIndex];
         console.log(randomIndex);
         const data = randomPhotoDoc.data();
+        console.log(data);
         console.log(uid === data.uid);
         if (uid === data.uid) {
             fetchRandomPhoto();
         } else {
-            console.log(data.photoUrl);
             setCurrentPhoto({
                 ...data,
                 id: randomPhotoDoc.id,
             });
+
             setIsLoading(false);
         }
     }
@@ -124,10 +125,13 @@ function Root() {
     }, [currentPhoto]);
 
     useEffect(() => {
+        fetchRandomPhoto();
+    }, []);
+
+    useEffect(() => {
         const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {
             if (user) {
                 setUid(user.uid);
-                fetchRandomPhoto();
             }
         });
         return unsubscribe;

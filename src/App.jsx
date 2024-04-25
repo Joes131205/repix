@@ -17,14 +17,20 @@ import NavBar from "./components/NavBar";
 import { useNavigate } from "react-router-dom";
 
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import {
+    doc,
+    getDoc,
+    getFirestore,
+    collection,
+    getDocs,
+} from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 import { ToastContainer } from "react-toastify";
 
 function App() {
     const [data, setData] = useState({
-        bestRatedPhoto: "",
+        bestRatedPhoto: [],
         reputation: 0,
         totalPhotosRated: 0,
         uploaded: 0,
@@ -34,6 +40,8 @@ function App() {
 
     const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const [bestPhoto, setBestPhoto] = useState(0);
 
     const handleSignupSuccess = () => {
         setIsLoggedIn(true);
@@ -53,7 +61,9 @@ function App() {
             if (user) {
                 setUid(user.uid);
                 await fetchData(user.uid);
+                await getBestPhoto(user.uid);
                 setIsLoggedIn(true);
+                console.log(data);
             } else {
                 navigate("/signup");
             }
@@ -62,6 +72,25 @@ function App() {
 
         return () => unsubscribe();
     }, []);
+
+    async function getBestPhoto(uid) {
+        const photosCollection = collection(db, "photos");
+        const querySnapshot = await getDocs(photosCollection);
+        if (querySnapshot.length === 0) return;
+
+        let bestPhoto = Number.MIN_VALUE;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.uid === uid) {
+                if (data.reputation > bestPhoto) {
+                    bestPhoto = data.reputation;
+                    setBestPhoto(data.reputation);
+                    setData({ ...data, bestRatedPhoto: data });
+                }
+            }
+        });
+    }
 
     async function fetchData(uid) {
         const docRef = doc(db, "users", uid);
