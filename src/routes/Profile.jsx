@@ -1,4 +1,5 @@
 function Profile(prop) {
+    console.log(prop.bestRatedPhoto);
     return (
         <div>
             <h1>Profile</h1>
@@ -14,7 +15,16 @@ function Profile(prop) {
                 <p>Total reputation: {prop.reputation}</p>
                 <p>Total photos rated: {prop.totalPhotosRated}</p>
                 <p>Photos uploaded: {prop.uploaded}</p>
-                <p>Best rated photo: {prop.bestRatedPhoto || "None yet"}</p>
+                <p>
+                    Best rated photo:{" "}
+                    {prop.bestRatedPhoto.photoUrl ? (
+                        <a href={prop.bestRatedPhoto.photoUrl} target="_blank">
+                            Photo Link
+                        </a>
+                    ) : (
+                        "None yet"
+                    )}
+                </p>
             </div>
         </div>
     );

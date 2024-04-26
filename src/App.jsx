@@ -30,18 +30,16 @@ import { ToastContainer } from "react-toastify";
 
 function App() {
     const [data, setData] = useState({
-        bestRatedPhoto: [],
         reputation: 0,
         totalPhotosRated: 0,
         uploaded: 0,
         username: "",
         profilePicture: "",
     });
+    const [bestRatedPhoto, setBestRatedPhoto] = useState({});
 
     const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    const [bestPhoto, setBestPhoto] = useState(0);
 
     const handleSignupSuccess = () => {
         setIsLoggedIn(true);
@@ -78,18 +76,22 @@ function App() {
         const querySnapshot = await getDocs(photosCollection);
         if (querySnapshot.length === 0) return;
 
-        let bestPhoto = Number.MIN_VALUE;
+        let bestPhotoData = {};
+        let bestReputation = Number.MIN_VALUE;
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             if (data.uid === uid) {
-                if (data.reputation > bestPhoto) {
-                    bestPhoto = data.reputation;
-                    setBestPhoto(data.reputation);
-                    setData({ ...data, bestRatedPhoto: data });
+                if (data.reputation > bestReputation) {
+                    bestReputation = data.reputation;
+                    bestPhotoData = { ...data };
                 }
             }
         });
+
+        if (bestPhotoData) {
+            setBestRatedPhoto(bestPhotoData);
+        }
     }
 
     async function fetchData(uid) {
@@ -132,7 +134,7 @@ function App() {
                             profilePicture={data.profilePicture}
                             reputation={data.reputation}
                             totalPhotosRated={data.totalPhotosRated}
-                            bestRatedPhoto={data.bestRatedPhoto}
+                            bestRatedPhoto={bestRatedPhoto}
                             uploaded={data.uploaded}
                         />
                     }

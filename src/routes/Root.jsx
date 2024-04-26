@@ -113,6 +113,7 @@ function Root() {
                 reputation: currentPhoto.reputation + currRating,
                 rated: updatedRated,
             };
+            console.log(currRating);
             await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
