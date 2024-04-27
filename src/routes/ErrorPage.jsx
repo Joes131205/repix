@@ -1,7 +1,15 @@
+import { useLocation } from "react-router-dom";
+
 function ErrorPage() {
+    let location = useLocation();
+    console.error(location);
     return (
-        <div>
-            <h1>What happen</h1>
+        <div className="flex flex-col items-center text-center justify-center box-border">
+            <h1>404</h1>
+            <h2>Dang!</h2>
+            <p>
+                <i>Accessing {location.pathname}</i>
+            </p>
         </div>
     );
 }

@@ -13,7 +13,7 @@ function NavBar(prop) {
     return (
         <>
             {prop.isLoggedIn && (
-                <div className="flex gap-12 items-center">
+                <div className="flex gap-12 items-center sticky">
                     <div>
                         <Link to="/profile" className="flex gap-5 items-center">
                             <img

@@ -22,11 +22,13 @@ function Root() {
     const [uid, setUid] = useState("");
     const [rating, setRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [attempts, setAttempts] = useState(0);
 
     const db = getFirestore(app);
 
     async function fetchRandomPhoto() {
         setIsLoading(true);
+        setAttempts(0);
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
 
@@ -43,6 +45,12 @@ function Root() {
         console.log(data);
         console.log(uid === data.uid);
         if (uid === data.uid) {
+            console.log("same photo! attempt" + attempts);
+            setAttempts((prev) => prev + 1);
+            console.log(attempts);
+            if (attempts >= 3) {
+                return;
+            }
             fetchRandomPhoto();
         } else {
             setCurrentPhoto({
@@ -139,7 +147,7 @@ function Root() {
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-col items-center justify-center h-screen overflow-hidden">
             {isLoading ? (
                 <div>Loading...</div>
             ) : (
