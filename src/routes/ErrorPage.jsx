@@ -5,7 +5,7 @@ function ErrorPage() {
     console.error(location);
     return (
         <div className="flex flex-col items-center text-center justify-center box-border">
-            <h1>404</h1>
+            <h1 className="text-2xl">404</h1>
             <h2>Dang!</h2>
             <p>
                 <i>Accessing {location.pathname}</i>

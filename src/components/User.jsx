@@ -1,9 +1,12 @@
 function User(prop) {
     return (
         <div className="flex gap-10">
-            <img src={prop.profilePicture} />
-            <p>{prop.username}</p>
-            <p>{prop.reputation}</p>
+            <p>{prop.rank}.</p>
+            <div className="flex gap-5">
+                <img src={prop.profilePicture} />
+                <p>{prop.username}</p>
+                <p>{prop.reputation}</p>
+            </div>
         </div>
     );
 }

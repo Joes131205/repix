@@ -125,6 +125,7 @@ function Root() {
             await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
+
             await fetchRandomPhoto();
         }
     }

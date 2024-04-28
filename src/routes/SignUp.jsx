@@ -71,8 +71,8 @@ function SignUp(prop) {
             await createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const user = userCredential.user;
-                    await storeUsernameAndData(user.uid, username);
                     await storeDefaultProfilePicture(user.uid);
+                    await storeUsernameAndData(user.uid, username);
                     await sendEmailVerification();
                     toast.success("Signed Up! Email verification sent!", {
                         position: "bottom-right",
@@ -137,7 +137,7 @@ function SignUp(prop) {
     });
 
     return (
-        <div>
+        <div className="flex flex-col h-screen items-center justify-center">
             <h1>Sign Up</h1>
             <form onSubmit={signUpUser}>
                 <div>

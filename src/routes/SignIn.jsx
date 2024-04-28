@@ -127,7 +127,7 @@ function SignIn(prop) {
     });
 
     return (
-        <div>
+        <div className="flex flex-col h-screen items-center justify-center">
             <form onSubmit={signInUser}>
                 <div>
                     <label htmlFor="email">Email</label>
@@ -151,6 +151,7 @@ function SignIn(prop) {
             </form>
             <p>{error}</p>
             <button onClick={signInUserWithGoogle}>Sign In With Google</button>
+            <Link to="/signup">Don't have an account?</Link>
         </div>
     );
 }
