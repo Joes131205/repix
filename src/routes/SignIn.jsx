@@ -8,7 +8,6 @@ import {
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
-    fetchSignInMethodsForEmail,
 } from "firebase/auth";
 
 import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
@@ -18,6 +17,8 @@ import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useNavigate } from "react-router-dom";
+
+import { Link } from "react-router-dom";
 
 function SignIn(prop) {
     const [data, setData] = useState({
@@ -127,24 +128,27 @@ function SignIn(prop) {
     });
 
     return (
-        <div className="flex flex-col h-screen items-center justify-center">
-            <form onSubmit={signInUser}>
-                <div>
+        <div className="flex flex-col h-screen items-center justify-center gap-10">
+            <h1>Sign In</h1>
+            <form onSubmit={signInUser} className="flex flex-col gap-20">
+                <div className="flex gap-5">
                     <label htmlFor="email">Email</label>
                     <input
                         type="text"
                         name="email"
+                        id="email"
                         value={data.email}
                         onChange={(e) =>
                             setData({ ...data, email: e.target.value })
                         }
                     />
                 </div>
-                <div>
-                    <label htmlFor="password"></label>
+                <div className="flex gap-5">
+                    <label htmlFor="password">Password</label>
                     <input
                         type="password"
                         name="password"
+                        id="password"
                         value={data.password}
                     />
                 </div>

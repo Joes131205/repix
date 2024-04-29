@@ -1,7 +1,7 @@
 function Profile(prop) {
     console.log(prop.bestRatedPhoto);
     return (
-        <div>
+        <div className=" flex flex-col items-center justify-center text-center gap-10">
             <h1>Profile</h1>
             <div>
                 <img
@@ -11,7 +11,7 @@ function Profile(prop) {
                 />
                 <h2>{prop.username}</h2>
             </div>
-            <div>
+            <div className="flex flex-col gap-5">
                 <p>Total reputation: {prop.reputation}</p>
                 <p>Total photos rated: {prop.totalPhotosRated}</p>
                 <p>Photos uploaded: {prop.uploaded}</p>

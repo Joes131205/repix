@@ -17,6 +17,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import Stars from "../components/Stars";
 
+import { toast, Bounce } from "react-toastify";
 function Root() {
     const [currentPhoto, setCurrentPhoto] = useState({});
     const [uid, setUid] = useState("");
@@ -125,7 +126,18 @@ function Root() {
             await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
-
+            console.log(rating);
+            toast.success(`Rated ${rating} Star${rating === 1 ? "" : "s"}!`, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
             await fetchRandomPhoto();
         }
     }
@@ -148,7 +160,7 @@ function Root() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen overflow-hidden">
+        <div className="flex flex-col items-center justify-center">
             {isLoading ? (
                 <div>Loading...</div>
             ) : (

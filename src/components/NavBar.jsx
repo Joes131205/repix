@@ -13,7 +13,7 @@ function NavBar(prop) {
     return (
         <>
             {prop.isLoggedIn ? (
-                <div className="flex items-center justify-around sticky bg-slate-400 h-10 px-5 mb-2">
+                <div className="flex items-center justify-between sticky bg-slate-300 h-12 px-5 mb-2">
                     <div className="flex gap-12 items-center justify-around">
                         <div>
                             <Link
@@ -28,7 +28,7 @@ function NavBar(prop) {
                                     alt="Profile Picture"
                                     className="w-10 h-10 rounded-full"
                                 />
-                                <h1>{prop.username}</h1>
+                                <h1 className="font-bold">{prop.username}</h1>
                             </Link>
                         </div>
                         <Link to="/">Home</Link>
@@ -50,7 +50,7 @@ function NavBar(prop) {
                     </div>
                 </div>
             ) : (
-                <div className="flex gap-12 items-center sticky bg-slate-400 h-10 px-5 mb-2">
+                <div className="flex gap-12 items-center sticky bg-slate-300 h-12 px-5 mb-2">
                     <h1 className="font-bold">Repix</h1>
                 </div>
             )}

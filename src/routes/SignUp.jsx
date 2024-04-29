@@ -137,14 +137,15 @@ function SignUp(prop) {
     });
 
     return (
-        <div className="flex flex-col h-screen items-center justify-center">
+        <div className="flex flex-col h-screen items-center justify-center gap-5">
             <h1>Sign Up</h1>
-            <form onSubmit={signUpUser}>
-                <div>
+            <form onSubmit={signUpUser} className="flex flex-col gap-10">
+                <div className="flex gap-5">
                     <label htmlFor="username">Username</label>
                     <input
                         type="text"
                         name="username"
+                        id="username"
                         placeholder="Username..."
                         value={data.username}
                         onChange={(e) =>
@@ -152,11 +153,12 @@ function SignUp(prop) {
                         }
                     />
                 </div>
-                <div>
+                <div className="flex gap-5">
                     <label htmlFor="email">Email</label>
                     <input
                         type="text"
                         name="email"
+                        id="email"
                         placeholder="Email..."
                         value={data.email}
                         onChange={(e) =>
@@ -164,11 +166,12 @@ function SignUp(prop) {
                         }
                     />
                 </div>
-                <div>
+                <div className="flex gap-5">
                     <label htmlFor="password">Password</label>
                     <input
                         type="password"
                         name="password"
+                        id="password"
                         placeholder="Password..."
                         value={data.password}
                         onChange={(e) =>
@@ -176,13 +179,14 @@ function SignUp(prop) {
                         }
                     />
                 </div>
-                <div>
+                <div className="flex gap-5">
                     <label htmlFor="confirmPassword">
                         Confirm your password
                     </label>
                     <input
                         type="password"
                         name="confirmPassword"
+                        id="confirmPassword"
                         placeholder="Confirm your password..."
                         value={data.confirmPassword}
                         onChange={(e) =>

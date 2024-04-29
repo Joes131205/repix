@@ -22,13 +22,15 @@ function Leaderboard() {
         const docRef = collection(db, "users");
         const q = query(docRef, orderBy("reputation", "desc"));
         const querySnapshot = await getDocs(q);
-        const docData = querySnapshot.docs.map((doc) => doc.data());
-        docData.map((user) => {
-            const storageRef = ref(storage, `profile-pictures/${uid}.png`);
-            const url = getDownloadURL(storageRef);
+        const docData = querySnapshot.docs.map(async (doc) => {
+            const user = doc.data();
+            const storageRef = ref(storage, `profile-pictures/${doc.id}.png`);
+            const url = await getDownloadURL(storageRef);
             user.profilePicture = url;
+            return user;
         });
-        setUsers(docData);
+        const allUsers = await Promise.all(docData);
+        setUsers(allUsers);
     }
 
     useEffect(() => {
@@ -38,10 +40,11 @@ function Leaderboard() {
     return (
         <div>
             <h1>Leaderboard</h1>
-            <div>
+            <div className="flex flex-col gap-10">
                 {users.map((user, i) => {
                     return (
                         <User
+                            key={i}
                             rank={i + 1}
                             reputation={user.reputation}
                             username={user.username}
