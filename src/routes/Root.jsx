@@ -160,7 +160,7 @@ function Root() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-10">
             {isLoading ? (
                 <div>Loading...</div>
             ) : (
@@ -170,7 +170,7 @@ function Root() {
             <button onClick={rate} disabled={isLoading}>
                 Rate!
             </button>{" "}
-            <Comment />
+            <Comment photo={currentPhoto} uid={uid} />
         </div>
     );
 }
