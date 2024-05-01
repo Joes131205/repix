@@ -1,11 +1,12 @@
 function CommentUser(prop) {
+    console.log(prop);
     return (
         <div>
             <div>
                 <img />
                 <h2></h2>
             </div>
-            <p></p>
+            <p>{prop.comment}</p>
         </div>
     );
 }

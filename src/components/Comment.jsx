@@ -1,8 +1,44 @@
-import { useState } from "react";
-import UserComment from "../components/CommentUser";
+import { useEffect, useState } from "react";
+import CommentUser from "../components/CommentUser";
+
+import app from "../firebase";
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { toast, Bounce } from "react-toastify";
 
 function Comment(prop) {
     const [comment, setComment] = useState("");
+    const [comments, setComments] = useState([]);
+    const db = getFirestore(app);
+    console.log(prop.photo.id);
+    async function sendComment() {
+        if (comment) {
+            const docRef = doc(db, "photos", prop.photo.id);
+            const docSnap = await getDoc(docRef);
+            const data = docSnap.data();
+            await updateDoc(docRef, {
+                comments: [
+                    ...data.comments,
+                    { uid: prop.uid, comment: comment },
+                ],
+            });
+            toast.success(`Commented!`, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
+            setComments([...comments, comment]);
+            setComment("");
+        }
+    }
+    useEffect(() => {
+        console.log(prop.photo);
+    }, [prop.photo]);
     return (
         <div className="text-center">
             <div className="flex gap-10">
@@ -13,15 +49,14 @@ function Comment(prop) {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                 />
-                <button>Comment</button>
+                <button onClick={sendComment}>Comment</button>
             </div>
 
-            {/* <div>{prop.comments ? prop.comments.map((com) => {
-                <UserComment 
-                    name={com.name}
-                    comment={com.comment}
-                />
-            }) : ""}</div> */}
+            <div>
+                {comments.map((comment) => (
+                    <CommentUser comment={comment.comment} />
+                ))}
+            </div>
         </div>
     );
 }
