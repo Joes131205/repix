@@ -9,7 +9,6 @@ function Comment(prop) {
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
     const db = getFirestore(app);
-    console.log(prop.photo.id);
     async function sendComment() {
         if (comment) {
             const docRef = doc(db, "photos", prop.photo.id);
@@ -21,6 +20,7 @@ function Comment(prop) {
                     { uid: prop.uid, comment: comment },
                 ],
             });
+
             toast.success(`Commented!`, {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -37,7 +37,7 @@ function Comment(prop) {
         }
     }
     useEffect(() => {
-        console.log(prop.photo);
+        setComments(prop.photo.comments);
     }, [prop.photo]);
     return (
         <div className="text-center">
@@ -52,7 +52,7 @@ function Comment(prop) {
                 <button onClick={sendComment}>Comment</button>
             </div>
 
-            <div>
+            <div className="flex flex-col gap-10">
                 {comments.map((comment) => (
                     <CommentUser comment={comment.comment} />
                 ))}
