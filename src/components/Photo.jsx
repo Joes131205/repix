@@ -9,7 +9,10 @@ function Photo(prop) {
     }, [prop.url]);
     return (
         <div>
-            <img src={url || "/images/placeholder.png"} className="w-96" />
+            <img
+                src={url || "/images/placeholder.png"}
+                className="w-96 h-96 max-w-96 max-h-96"
+            />
         </div>
     );
 }

@@ -36,7 +36,7 @@ function App() {
         username: "",
         profilePicture: "",
     });
-    const [bestRatedPhoto, setBestRatedPhoto] = useState({});
+    const [totalPhotos, setTotalPhotos] = useState([]);
 
     const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,43 +54,21 @@ function App() {
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                setUid(user.uid);
-                await fetchData(user.uid);
-                await getBestPhoto(user.uid);
-                setIsLoggedIn(true);
-                console.log(data);
-            } else {
-                navigate("/signup");
-            }
-            return unsubscribe;
-        });
-
-        return () => unsubscribe();
-    }, []);
-
-    async function getBestPhoto(uid) {
+    async function getAllPhotos(uid) {
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
         if (querySnapshot.length === 0) return;
-
-        let bestPhotoData = {};
-        let bestReputation = Number.MIN_VALUE;
-
+        const photoData = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             if (data.uid === uid) {
-                if (data.reputation > bestReputation) {
-                    bestReputation = data.reputation;
-                    bestPhotoData = { ...data };
-                }
+                photoData.push(data);
             }
         });
 
-        if (bestPhotoData) {
-            setBestRatedPhoto(bestPhotoData);
+        if (photoData) {
+            console.log(photoData);
+            setTotalPhotos(photoData);
         }
     }
 
@@ -106,6 +84,24 @@ function App() {
         setData({ ...userData });
     }
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                setUid(user.uid);
+                await fetchData(user.uid);
+                await getAllPhotos(user.uid);
+                setIsLoggedIn(true);
+                console.log(data);
+            } else {
+                navigate("/signup");
+            }
+            return unsubscribe;
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {}, []);
     return (
         <div>
             <NavBar
@@ -134,7 +130,7 @@ function App() {
                             profilePicture={data.profilePicture}
                             reputation={data.reputation}
                             totalPhotosRated={data.totalPhotosRated}
-                            bestRatedPhoto={bestRatedPhoto}
+                            photos={totalPhotos}
                             uploaded={data.uploaded}
                         />
                     }

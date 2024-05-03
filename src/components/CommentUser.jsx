@@ -1,5 +1,5 @@
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { getStorage, getDownloadURL } from "firebase/storage";
+import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
 import app from "../firebase";
@@ -29,12 +29,13 @@ function CommentUser(prop) {
     }
 
     useEffect(() => {
+        console.log(prop.uid);
         fetchData(prop.uid);
     }, []);
     return (
-        <div className="flex flex-col gap-5">
-            <div className="flex gap-10">
-                <img src={profilePicture} />
+        <div className="flex gap-[4rem] items-center justify-center h-12">
+            <div className="flex gap-2 items-center">
+                <img src={profilePicture} className="w-10" />
                 <h2>{username}</h2>
             </div>
             <p>{prop.comment}</p>

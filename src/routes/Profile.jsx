@@ -1,5 +1,11 @@
+import { useEffect, useState } from "react";
+
 function Profile(prop) {
-    console.log(prop.bestRatedPhoto);
+    const [photos, setPhotos] = useState([]);
+    useEffect(() => {
+        setPhotos(prop.photos);
+        console.log(prop.photos);
+    }, [prop]);
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10">
             <h1>Profile</h1>
@@ -15,16 +21,17 @@ function Profile(prop) {
                 <p>Total reputation: {prop.reputation}</p>
                 <p>Total photos rated: {prop.totalPhotosRated}</p>
                 <p>Photos uploaded: {prop.uploaded}</p>
-                <p>
-                    Best rated photo:{" "}
-                    {prop.bestRatedPhoto.photoUrl ? (
-                        <a href={prop.bestRatedPhoto.photoUrl} target="_blank">
-                            Photo Link
-                        </a>
-                    ) : (
-                        "None yet"
-                    )}
-                </p>
+                <div>
+                    {photos
+                        ? photos.map((photo) => (
+                              <img
+                                  src={photo.photoUrl}
+                                  alt="Photo"
+                                  className="w-96 h-96 max-w-96 max-h-96"
+                              />
+                          ))
+                        : "None yet"}
+                </div>
             </div>
         </div>
     );

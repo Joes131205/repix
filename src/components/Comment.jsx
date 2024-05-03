@@ -37,11 +37,11 @@ function Comment(prop) {
         }
     }
     useEffect(() => {
-        setComments(prop.photo.comments);
+        setComments(prop.photo.comments || []);
     }, [prop.photo]);
     return (
         <div className="text-center">
-            <div className="flex gap-10">
+            <div className="flex gap-10 mb-5">
                 <input
                     type="text"
                     placeholder="Have any comment? (Optional)"
@@ -54,7 +54,7 @@ function Comment(prop) {
 
             <div className="flex flex-col gap-10">
                 {comments.map((comment) => (
-                    <CommentUser comment={comment.comment} />
+                    <CommentUser comment={comment.comment} uid={comment.uid} />
                 ))}
             </div>
         </div>
