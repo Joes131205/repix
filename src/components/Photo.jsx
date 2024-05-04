@@ -4,7 +4,6 @@ function Photo(prop) {
     const [url, setUrl] = useState("");
 
     useEffect(() => {
-        console.log(prop.url);
         setUrl(prop.url);
     }, [prop.url]);
     return (

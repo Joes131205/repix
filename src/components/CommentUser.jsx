@@ -1,16 +1,12 @@
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { getStorage, getDownloadURL, ref } from "firebase/storage";
+import { doc, getDoc } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
-import app from "../firebase";
+import { db, storage, auth } from "../firebase";
 
 function CommentUser(prop) {
-    console.log(prop);
     const [username, setUsername] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
-
-    const db = getFirestore(app);
-    const storage = getStorage(app);
 
     async function fetchUsername(uid) {
         const docRef = doc(db, "users", uid);
@@ -35,7 +31,7 @@ function CommentUser(prop) {
     return (
         <div className="flex gap-[4rem] items-center justify-center h-12">
             <div className="flex gap-2 items-center">
-                <img src={profilePicture} className="w-10" />
+                <img src={profilePicture} className="w-10 rounded-full" />
                 <h2>{username}</h2>
             </div>
             <p>{prop.comment}</p>

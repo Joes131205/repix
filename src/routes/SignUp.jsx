@@ -1,27 +1,23 @@
-import app from "../firebase";
+import { db, storage, auth } from "../firebase";
 
 import { useEffect, useState } from "react";
 
 import {
-    getAuth,
     onAuthStateChanged,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
     sendEmailVerification,
 } from "firebase/auth";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { setDoc, doc } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 import { toast, Bounce } from "react-toastify";
 
 import { useNavigate, Link } from "react-router-dom";
 
 function SignUp(prop) {
-    const auth = getAuth(app);
     auth.useDeviceLanguage();
-
-    const storage = getStorage(app);
 
     const navigate = useNavigate();
     const provider = new GoogleAuthProvider();
@@ -40,7 +36,6 @@ function SignUp(prop) {
             username = `user_${uid.slice(1, 5)}`;
         }
         try {
-            const db = getFirestore(app);
             const docRef = doc(db, "users", uid);
             await setDoc(docRef, {
                 username,

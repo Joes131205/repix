@@ -1,9 +1,9 @@
-import { onAuthStateChanged, getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 
-import app from "../firebase";
+import { db, storage, auth } from "../firebase";
 
 import { useNavigate, Link } from "react-router-dom";
 
@@ -14,10 +14,6 @@ function Setting() {
     const [username, setUsername] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
     const [profilePictureReview, setProfilePictureReview] = useState("");
-
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
 
     const navigate = useNavigate();
 

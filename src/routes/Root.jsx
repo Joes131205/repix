@@ -2,7 +2,6 @@ import Photo from "../components/Photo";
 import Comment from "../components/Comment";
 
 import {
-    getFirestore,
     getDocs,
     collection,
     updateDoc,
@@ -12,7 +11,7 @@ import {
 
 import { useEffect, useState } from "react";
 
-import app from "../firebase";
+import { db, storage, auth } from "../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import Stars from "../components/Stars";
@@ -24,8 +23,6 @@ function Root() {
     const [rating, setRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0);
-
-    const db = getFirestore(app);
 
     async function fetchRandomPhoto() {
         setIsLoading(true);
@@ -41,10 +38,7 @@ function Root() {
         const randomIndex = Math.floor(Math.random() * querySnapshot.size);
 
         const randomPhotoDoc = querySnapshot.docs[randomIndex];
-        console.log(randomIndex);
         const data = randomPhotoDoc.data();
-        console.log(data);
-        console.log(uid === data.uid);
         if (uid === data.uid) {
             console.log("same photo! attempt" + attempts);
             setAttempts((prev) => prev + 1);
@@ -65,7 +59,6 @@ function Root() {
 
     async function updatePhoto(data) {
         const ref = doc(db, "photos", currentPhoto.id);
-        console.log(currentPhoto);
         try {
             await updateDoc(ref, data);
             console.log("Photo reputation updated successfully!");
@@ -84,7 +77,7 @@ function Root() {
                 totalPhotosRated: data.totalPhotosRated + 1,
             });
         } catch (error) {
-            console.error("Error updating photo reputation:", error);
+            console.error(error);
         }
     }
 
@@ -98,7 +91,7 @@ function Root() {
                 reputation: data.reputation + rating,
             });
         } catch (error) {
-            console.error("Error updating other profile reputation:", error);
+            console.error(error);
         }
     }
 
@@ -151,7 +144,7 @@ function Root() {
     }, []);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(getAuth(app), (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUid(user.uid);
             }

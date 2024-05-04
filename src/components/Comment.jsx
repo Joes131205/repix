@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import CommentUser from "../components/CommentUser";
 
-import app from "../firebase";
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db, storage, auth } from "../firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { toast, Bounce } from "react-toastify";
 
 function Comment(prop) {
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
-    const db = getFirestore(app);
     async function sendComment() {
         if (comment) {
             const docRef = doc(db, "photos", prop.photo.id);

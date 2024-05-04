@@ -1,24 +1,20 @@
 import {
-    getFirestore,
     addDoc,
-    setDoc,
     collection,
     serverTimestamp,
     doc,
     getDoc,
     updateDoc,
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { useState } from "react";
 
-import app from "../firebase";
+import { db, storage, auth } from "../firebase";
 
 import { toast, Bounce } from "react-toastify";
 
 function Upload(prop) {
-    const db = getFirestore(app);
-    const storage = getStorage(app);
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
 

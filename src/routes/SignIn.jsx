@@ -1,17 +1,16 @@
-import app from "../firebase";
+import { db, storage, auth } from "../firebase";
 
 import { useEffect, useState } from "react";
 
 import {
-    getAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
 } from "firebase/auth";
 
-import { getFirestore, setDoc, doc, getDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,7 +27,6 @@ function SignIn(prop) {
 
     const [error, setError] = useState("");
 
-    const auth = getAuth(app);
     auth.useDeviceLanguage();
 
     const navigate = useNavigate();
@@ -41,7 +39,6 @@ function SignIn(prop) {
             const user = result.user;
             const uid = user.uid;
 
-            const db = getFirestore(app);
             const docRef = doc(db, "users", uid);
             const docSnap = await getDoc(docRef);
             console.log(docSnap.exists());
@@ -68,7 +65,6 @@ function SignIn(prop) {
                     bestRatedPhoto: "",
                     totalPhotosRated: 0,
                 });
-                const storage = getStorage(app);
                 const image = "/images/default_profile_picture.png";
                 const response = await fetch(image);
 

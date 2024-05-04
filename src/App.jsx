@@ -10,20 +10,14 @@ import Profile from "./routes/Profile";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { useEffect, useState } from "react";
-import app from "./firebase";
+import { db, storage, auth } from "./firebase";
 
 import NavBar from "./components/NavBar";
 
 import { useNavigate } from "react-router-dom";
 
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import {
-    doc,
-    getDoc,
-    getFirestore,
-    collection,
-    getDocs,
-} from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 import { ToastContainer } from "react-toastify";
@@ -41,18 +35,15 @@ function App() {
     const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const handleSignupSuccess = () => {
+    const handleLogIn = () => {
         setIsLoggedIn(true);
+        fetchData(uid);
+        getAllPhotos(uid);
     };
-
     const handleSignout = () => {
         setIsLoggedIn(false);
     };
-
     const navigate = useNavigate();
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
 
     async function getAllPhotos(uid) {
         const photosCollection = collection(db, "photos");
@@ -67,14 +58,20 @@ function App() {
         });
 
         if (photoData) {
-            console.log(photoData);
             setTotalPhotos(photoData);
         }
     }
 
     async function fetchData(uid) {
+        console.log(uid);
         const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            console.log("No such document!");
+            return;
+        }
+
         const userData = docSnap.data();
 
         const storageRef = ref(storage, `profile-pictures/${uid}.png`);
@@ -88,10 +85,7 @@ function App() {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setUid(user.uid);
-                await fetchData(user.uid);
-                await getAllPhotos(user.uid);
-                setIsLoggedIn(true);
-                console.log(data);
+                handleLogIn();
             } else {
                 navigate("/signup");
             }
@@ -101,7 +95,6 @@ function App() {
         return () => unsubscribe();
     }, []);
 
-    useEffect(() => {}, []);
     return (
         <div>
             <NavBar
@@ -114,11 +107,11 @@ function App() {
                 <Route path="/" element={<Root />} />
                 <Route
                     path="/signin"
-                    element={<SignIn onSigninSuccess={handleSignupSuccess} />}
+                    element={<SignIn onSigninSuccess={handleLogIn} />}
                 />
                 <Route
                     path="/signup"
-                    element={<SignUp onSignupSuccess={handleSignupSuccess} />}
+                    element={<SignUp onSignupSuccess={handleLogIn} />}
                 />
                 <Route path="/upload" element={<Upload uid={uid} />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />

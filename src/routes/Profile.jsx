@@ -4,7 +4,6 @@ function Profile(prop) {
     const [photos, setPhotos] = useState([]);
     useEffect(() => {
         setPhotos(prop.photos);
-        console.log(prop.photos);
     }, [prop]);
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10">
@@ -25,6 +24,7 @@ function Profile(prop) {
                     {photos
                         ? photos.map((photo) => (
                               <img
+                                  key={photo.id}
                                   src={photo.photoUrl}
                                   alt="Photo"
                                   className="w-96 h-96 max-w-96 max-h-96"
