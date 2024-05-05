@@ -16,9 +16,9 @@ import NavBar from "./components/NavBar";
 
 import { useNavigate } from "react-router-dom";
 
-import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { getDownloadURL, ref } from "firebase/storage";
 
 import { ToastContainer } from "react-toastify";
 
@@ -36,6 +36,7 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogIn = () => {
+        console.log(uid);
         setIsLoggedIn(true);
         fetchData(uid);
         getAllPhotos(uid);
@@ -65,12 +66,8 @@ function App() {
     async function fetchData(uid) {
         console.log(uid);
         const docRef = doc(db, "users", uid);
+        console.log(docRef);
         const docSnap = await getDoc(docRef);
-
-        if (!docSnap.exists()) {
-            console.log("No such document!");
-            return;
-        }
 
         const userData = docSnap.data();
 
@@ -82,14 +79,14 @@ function App() {
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
+                console.log(user);
                 setUid(user.uid);
                 handleLogIn();
             } else {
                 navigate("/signup");
             }
-            return unsubscribe;
         });
 
         return () => unsubscribe();

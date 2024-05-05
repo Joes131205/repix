@@ -29,7 +29,7 @@ function CommentUser(prop) {
         fetchData(prop.uid);
     }, []);
     return (
-        <div className="flex gap-[4rem] items-center justify-center h-12">
+        <div className="flex gap-[4rem] items-center justify-between px-5 h-12 border border-[#D3D3D3] bg-[#F5F5F5] rounded-[4px]">
             <div className="flex gap-2 items-center">
                 <img src={profilePicture} className="w-10 rounded-full" />
                 <h2>{username}</h2>

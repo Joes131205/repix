@@ -36,7 +36,11 @@ function Comment(prop) {
         }
     }
     useEffect(() => {
-        setComments(prop.photo.comments || []);
+        if (prop.photo.comments) {
+            setComments(prop.photo.comments);
+        } else {
+            setComments([]);
+        }
     }, [prop.photo]);
     return (
         <div className="text-center">
