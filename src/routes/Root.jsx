@@ -7,12 +7,13 @@ import {
     updateDoc,
     doc,
     getDoc,
+    onSnapshot,
 } from "firebase/firestore";
 
 import { useEffect, useState } from "react";
 
 import { db, storage, auth } from "../firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 import Stars from "../components/Stars";
 
@@ -149,6 +150,20 @@ function Root() {
                 setUid(user.uid);
             }
         });
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(
+            doc(db, `photos/${currentPhoto.id}`),
+            (doc) => {
+                console.log(doc);
+                const data = doc.data();
+                setCurrentPhoto({
+                    ...data,
+                });
+            }
+        );
         return unsubscribe;
     }, []);
 

@@ -35,15 +35,6 @@ function App() {
     const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const handleLogIn = () => {
-        console.log(uid);
-        setIsLoggedIn(true);
-        fetchData(uid);
-        getAllPhotos(uid);
-    };
-    const handleSignout = () => {
-        setIsLoggedIn(false);
-    };
     const navigate = useNavigate();
 
     async function getAllPhotos(uid) {
@@ -77,13 +68,21 @@ function App() {
 
         setData({ ...userData });
     }
+    const handleLogIn = () => {
+        console.log(uid);
+        setIsLoggedIn(true);
+        fetchData(uid);
+        getAllPhotos(uid);
+    };
 
+    const handleSignout = () => {
+        setIsLoggedIn(false);
+    };
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 console.log(user);
                 setUid(user.uid);
-                handleLogIn();
             } else {
                 navigate("/signup");
             }
@@ -91,6 +90,10 @@ function App() {
 
         return () => unsubscribe();
     }, []);
+
+    useEffect(() => {
+        handleLogIn();
+    }, [uid]);
 
     return (
         <div>
