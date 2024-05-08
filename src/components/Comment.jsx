@@ -36,7 +36,7 @@ function Comment(prop) {
         }
     }
     useEffect(() => {
-        if (prop.photo.comments) {
+        if (prop.photo?.comments) {
             setComments(prop.photo.comments);
         } else {
             setComments([]);

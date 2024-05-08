@@ -28,6 +28,7 @@ function CommentUser(prop) {
         console.log(prop.uid);
         fetchData(prop.uid);
     }, []);
+
     return (
         <div className="flex gap-[4rem] items-center justify-between px-5 h-12 border border-[#D3D3D3] bg-[#F5F5F5] rounded-[4px]">
             <div className="flex gap-2 items-center">

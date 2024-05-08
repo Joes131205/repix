@@ -36,15 +36,20 @@ function Root() {
             return;
         }
 
-        const randomIndex = Math.floor(Math.random() * querySnapshot.size);
+        let randomPhotoDoc;
+        let data;
+        do {
+            const randomIndex = Math.floor(Math.random() * querySnapshot.size);
+            randomPhotoDoc = querySnapshot.docs[randomIndex];
+            data = randomPhotoDoc.data();
+        } while (uid === data.uid && data.rated.includes(uid));
 
-        const randomPhotoDoc = querySnapshot.docs[randomIndex];
-        const data = randomPhotoDoc.data();
         if (uid === data.uid) {
             console.log("same photo! attempt" + attempts);
             setAttempts((prev) => prev + 1);
-            console.log(attempts);
-            if (attempts >= 3) {
+            let currentAttempts = attempts + 1;
+            console.log(currentAttempts);
+            if (currentAttempts >= 3) {
                 return;
             }
             fetchRandomPhoto();
@@ -120,7 +125,7 @@ function Root() {
             await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
-            console.log(rating);
+
             toast.success(`Rated ${rating} Star${rating === 1 ? "" : "s"}!`, {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -132,6 +137,7 @@ function Root() {
                 theme: "colored",
                 transition: Bounce,
             });
+            setRating(0);
             await fetchRandomPhoto();
         }
     }
@@ -151,7 +157,7 @@ function Root() {
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
-            doc(db, `photos/${currentPhoto.id}`),
+            doc(db, `photos/${currentPhoto?.id}`),
             (snapshot) => {
                 const data = snapshot.data();
                 setCurrentPhoto(data);
@@ -166,7 +172,7 @@ function Root() {
             {isLoading ? (
                 <div>Loading...</div>
             ) : (
-                <Photo url={currentPhoto.photoUrl} />
+                <Photo url={currentPhoto?.photoUrl ?? ""} />
             )}{" "}
             <Stars setRating={setRating} rating={rating} />
             <button onClick={rate} disabled={isLoading}>
