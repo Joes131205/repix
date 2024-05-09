@@ -20,7 +20,7 @@ function Profile(prop) {
                 <p>Total reputation: {prop.reputation}</p>
                 <p>Total photos rated: {prop.totalPhotosRated}</p>
                 <p>Photos uploaded: {prop.uploaded}</p>
-                <div>
+                <div className="flex gap-10">
                     {photos
                         ? photos.map((photo) => (
                               <img

@@ -8,16 +8,16 @@ import { toast, Bounce } from "react-toastify";
 function Comment(prop) {
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
-    async function sendComment() {
+    async function sendComment(e) {
+        e.preventDefault();
         if (comment) {
+            const curComment = { uid: prop.uid, comment: comment };
             const docRef = doc(db, "photos", prop.photo.id);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
+
             await updateDoc(docRef, {
-                comments: [
-                    ...data.comments,
-                    { uid: prop.uid, comment: comment },
-                ],
+                comments: [...data.comments, curComment],
             });
 
             toast.success(`Commented!`, {
@@ -31,7 +31,7 @@ function Comment(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            setComments([...comments, comment]);
+            setComments([...comments, curComment]);
             setComment("");
         }
     }
@@ -42,6 +42,7 @@ function Comment(prop) {
             setComments([]);
         }
     }, [prop.photo]);
+
     return (
         <div className="text-center">
             <div className="flex gap-10 mb-5">

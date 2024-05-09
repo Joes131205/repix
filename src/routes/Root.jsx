@@ -155,18 +155,6 @@ function Root() {
         return unsubscribe;
     }, []);
 
-    useEffect(() => {
-        const unsubscribe = onSnapshot(
-            doc(db, `photos/${currentPhoto?.id}`),
-            (snapshot) => {
-                const data = snapshot.data();
-                setCurrentPhoto(data);
-                console.log(data);
-            }
-        );
-        return unsubscribe;
-    }, [currentPhoto]);
-
     return (
         <div className="flex flex-col items-center justify-center gap-10">
             {isLoading ? (
