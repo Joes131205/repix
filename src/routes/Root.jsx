@@ -42,25 +42,20 @@ function Root() {
             const randomIndex = Math.floor(Math.random() * querySnapshot.size);
             randomPhotoDoc = querySnapshot.docs[randomIndex];
             data = randomPhotoDoc.data();
-        } while (uid === data.uid && data.rated.includes(uid));
+            console.log("same photo!");
+        } while (data.uid === uid && attempts < querySnapshot.size);
 
-        if (uid === data.uid) {
-            console.log("same photo! attempt" + attempts);
-            setAttempts((prev) => prev + 1);
-            let currentAttempts = attempts + 1;
-            console.log(currentAttempts);
-            if (currentAttempts >= 3) {
-                return;
-            }
-            fetchRandomPhoto();
-        } else {
+        if (attempts < querySnapshot.size) {
             setCurrentPhoto({
                 ...data,
                 id: randomPhotoDoc.id,
             });
-
-            setIsLoading(false);
+        } else {
+            console.log("No more photos to fetch.");
         }
+
+        setIsLoading(false);
+        setAttempts(attempts + 1);
     }
 
     async function updatePhoto(data) {

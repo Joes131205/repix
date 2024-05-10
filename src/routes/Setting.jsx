@@ -101,16 +101,16 @@ function Setting() {
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-col items-center justify-center h-screen gap-10">
             <h1>Setting</h1>
-            <div className="w-screen flex items-center gap-5">
+            <div className="w-screen flex items-center gap-10 justify-center">
                 <img
                     src={profilePictureReview || "/images/placeholder.png"}
                     alt="Profile Picture"
                     className="w-10 h-10 rounded-full"
                 />
             </div>
-            <div className="w-screen flex items-center gap-5">
+            <div className="w-screen flex items-center gap-10 justify-center">
                 <label htmlFor="username">Username</label>
                 <input
                     type="text"

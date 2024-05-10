@@ -29,7 +29,7 @@ function Leaderboard() {
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-col items-center justify-center">
             <h1>Leaderboard</h1>
             <div className="flex flex-col gap-10">
                 {users.map((user, i) => {
