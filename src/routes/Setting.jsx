@@ -115,6 +115,7 @@ function Setting() {
                 <input
                     type="text"
                     name="username"
+                    className="text-black"
                     placeholder="Username..."
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}

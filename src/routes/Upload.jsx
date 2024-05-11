@@ -116,7 +116,7 @@ function Upload(prop) {
             <input type="file" onChange={previewImage} accept="image/png" />
             <img
                 src={photoReview || "/images/placeholder.png"}
-                className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black"
+                className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500"
             />
             <button onClick={uploadPhoto}>Upload!</button>
         </div>

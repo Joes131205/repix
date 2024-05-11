@@ -49,7 +49,7 @@ function Comment(prop) {
                 <input
                     type="text"
                     placeholder="Have any comment? (Optional)"
-                    className="w-96 border border-black px-2 py-2"
+                    className="w-96 border border-black px-2 py-2 text-black"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                 />
