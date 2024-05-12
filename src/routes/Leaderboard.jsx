@@ -4,8 +4,6 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { db, storage, auth } from "../firebase";
 import { useEffect, useState } from "react";
 
-import User from "../components/User";
-
 function Leaderboard() {
     const [users, setUsers] = useState([]);
 
@@ -29,21 +27,36 @@ function Leaderboard() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center">
-            <h1>Leaderboard</h1>
-            <div className="flex flex-col gap-10">
-                {users.map((user, i) => {
-                    return (
-                        <User
-                            key={i}
-                            rank={i + 1}
-                            reputation={user.reputation}
-                            username={user.username}
-                            profilePicture={user.profilePicture}
-                        />
-                    );
-                })}
-            </div>
+        <div className="flex flex-col items-center justify-center gap-12">
+            <h1 className="font-bold">Leaderboard</h1>
+            <table class="w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-center">Rank</th>
+                        <th class="px-4 py-2 text-center">User</th>
+                        <th class="px-4 py-2 text-center">Total Reputation</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {users.map((user, i) => {
+                        return (
+                            <tr key={i}>
+                                <td class="px-4 py-2 text-center">{i + 1}</td>
+                                <td class="px-4 py-2 flex items-center justify-center gap-4">
+                                    <img
+                                        src={user.profilePicture}
+                                        class="w-10 h-10 rounded-full"
+                                    />
+                                    <p class=" font-medium">{user.username}</p>
+                                </td>
+                                <td class="px-4 py-2 text-center">
+                                    {user.reputation}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
         </div>
     );
 }

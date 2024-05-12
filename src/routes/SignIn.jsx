@@ -134,6 +134,7 @@ function SignIn(prop) {
                         name="email"
                         id="email"
                         value={data.email}
+                        className="text-white"
                         onChange={(e) =>
                             setData({ ...data, email: e.target.value })
                         }
@@ -145,6 +146,7 @@ function SignIn(prop) {
                         type="password"
                         name="password"
                         id="password"
+                        className="text-white"
                         value={data.password}
                     />
                 </div>

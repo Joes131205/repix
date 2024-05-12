@@ -10,7 +10,7 @@ function Stars(prop) {
                     className={
                         prop.rating >= index + 1
                             ? "text-yellow-500"
-                            : "text-gray-300"
+                            : "text-gray-300 dark:text-gray-100"
                     }
                     onClick={() => prop.setRating(index + 1)}
                 >

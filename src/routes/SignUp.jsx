@@ -141,6 +141,7 @@ function SignUp(prop) {
                         type="text"
                         name="username"
                         id="username"
+                        className="text-white"
                         placeholder="Username..."
                         value={data.username}
                         onChange={(e) =>
@@ -154,6 +155,7 @@ function SignUp(prop) {
                         type="text"
                         name="email"
                         id="email"
+                        className="text-white"
                         placeholder="Email..."
                         value={data.email}
                         onChange={(e) =>
@@ -167,6 +169,7 @@ function SignUp(prop) {
                         type="password"
                         name="password"
                         id="password"
+                        className="text-white"
                         placeholder="Password..."
                         value={data.password}
                         onChange={(e) =>
@@ -182,6 +185,7 @@ function SignUp(prop) {
                         type="password"
                         name="confirmPassword"
                         id="confirmPassword"
+                        className="text-white"
                         placeholder="Confirm your password..."
                         value={data.confirmPassword}
                         onChange={(e) =>

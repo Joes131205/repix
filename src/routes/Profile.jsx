@@ -7,8 +7,8 @@ function Profile(prop) {
     }, [prop]);
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10">
-            <h1>Profile</h1>
-            <div>
+            <h1 className="font-bold text-2xl">Your Profile</h1>
+            <div className="flex flex-col gap-2">
                 <img
                     src={prop.profilePicture || "/images/placeholder.png"}
                     alt="Profile Picture"

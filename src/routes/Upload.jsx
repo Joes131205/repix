@@ -112,7 +112,8 @@ function Upload(prop) {
 
     return (
         <div className="h-screen flex flex-col items-center justify-center gap-10">
-            <h1>Upload Photos</h1>
+            <h1 className="text-2xl font-bold">Upload Photo</h1>
+            <p>NOTE: We only accepts PNG :)</p>
             <input type="file" onChange={previewImage} accept="image/png" />
             <img
                 src={photoReview || "/images/placeholder.png"}
