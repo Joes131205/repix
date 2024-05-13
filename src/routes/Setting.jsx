@@ -101,41 +101,49 @@ function Setting() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen gap-10">
-            <h1>Setting</h1>
-            <div className="w-screen flex items-center gap-10 justify-center">
+        <div className="flex flex-col items-center justify-center h-full gap-10">
+            <h1 className="font-bold text-2xl">Setting</h1>
+            <div className="w-screen flex flex-col items-center gap-10 justify-center">
                 <img
                     src={profilePictureReview || "/images/placeholder.png"}
                     alt="Profile Picture"
                     className="w-10 h-10 rounded-full"
                 />
             </div>
-            <div className="w-screen flex items-center gap-10 justify-center">
+            <div className="w-screen flex flex-col items-center gap-2 justify-center">
                 <label htmlFor="username">Username</label>
                 <input
                     type="text"
                     name="username"
+                    id="username"
                     className="text-black"
                     placeholder="Username..."
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
-                <button onClick={() => changeUsername(username)}>
+                <button
+                    onClick={() => changeUsername(username)}
+                    className="border-2 border-black px-5 py-2 bg-gray-200 hover:bg-gray-300 text-black font-bold rounded transition dark:[#4a4a4a] dark:hover:bg-[#5a5a5a] dark:text-black"
+                >
                     Change Username
                 </button>
             </div>
 
-            <div>
+            <div className="flex flex-col items-center gap-2 justify-center">
                 <label htmlFor="profilePicture">Profile Picture</label>
                 <input
                     type="file"
                     name="profilePicture"
+                    id="profilePicture"
                     onChange={
                         changeProfilePictureReview || "/images/placeholder.png"
                     }
                     accept="image/png"
                 />
-                <button onClick={() => changeProfilePicture(profilePicture)}>
+                <button
+                    onClick={() => changeProfilePicture(profilePicture)}
+                    className="border-2 border-black px-5 py-2 bg-gray-200 hover:bg-gray-300 text-black font-bold rounded transition dark:[#4a4a4a] dark:hover:bg-[#5a5a5a] dark:text-black"
+                >
                     Change Profile Picture
                 </button>
             </div>

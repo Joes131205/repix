@@ -29,6 +29,7 @@ function Leaderboard() {
     return (
         <div className="flex flex-col items-center justify-center gap-12">
             <h1 className="font-bold">Leaderboard</h1>
+
             <table class="w-full table-auto">
                 <thead>
                     <tr>

@@ -17,6 +17,7 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                 console.log(error);
             });
     };
+
     useEffect(() => {
         if (darkMode) {
             document.body.classList.add("dark");
@@ -24,17 +25,28 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
             document.body.classList.remove("dark");
         }
     }, [darkMode]);
+
+    useEffect(() => {
+        const isDarkMode = JSON.parse(localStorage.getItem("isDarkMode"));
+        setDarkMode(isDarkMode);
+    }, []);
+
     function toggleDarkMode() {
+        localStorage.setItem("isDarkMode", JSON.stringify(!darkMode));
         setDarkMode(!darkMode);
     }
+
     return (
         <div
-            className={`flex items-center justify-between sticky bg-slate-300 h-12 px-5 mb-2 dark:bg-gray-900`}
+            className={`flex items-center justify-between sticky bg-gray-200 h-12 px-5 mb-2 dark:bg-[#333333]`}
         >
             {isLoggedIn ? (
                 <div className="flex gap-12 items-center justify-around">
                     <div>
-                        <Link to="/profile" className="flex gap-5 items-center">
+                        <Link
+                            to="/profile"
+                            className="flex gap-5 items-center dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        >
                             <img
                                 src={
                                     profilePicture || "/images/placeholder.png"
@@ -45,13 +57,48 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                             <h1 className="font-bold">{username}</h1>
                         </Link>
                     </div>
-                    <Link to="/">Home</Link>
-                    <Link to="/upload">Upload</Link>
-                    <Link to="/leaderboard">Leaderboard</Link>
-                    <Link to="/setting">Setting</Link>
-                    <button onClick={handleSignOut}>Sign Out</button>
-                    <button onClick={toggleDarkMode}>
-                        {darkMode ? "Light Mode" : "Dark Mode"}
+                    <Link
+                        to="/"
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Home
+                    </Link>
+                    <Link
+                        to="/upload"
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Upload
+                    </Link>
+                    <Link
+                        to="/leaderboard"
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Leaderboard
+                    </Link>
+                    <Link
+                        to="/setting"
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Setting
+                    </Link>
+                    <button
+                        onClick={handleSignOut}
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Sign Out
+                    </button>
+                    <button
+                        onClick={toggleDarkMode}
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        <img
+                            src={
+                                darkMode
+                                    ? "/images/light_mode.svg"
+                                    : "/images/dark_mode.svg"
+                            }
+                            className="w-8 h-8"
+                        />
                     </button>
                 </div>
             ) : (
