@@ -44,16 +44,21 @@ function Comment(prop) {
     }, [prop.photo]);
 
     return (
-        <div className="text-center">
+        <div className="text-center mb-10">
             <div className="flex gap-10 mb-5">
                 <input
                     type="text"
                     placeholder="Have any comment? (Optional)"
-                    className="w-96 border border-black px-2 py-2 text-black"
+                    className="w-96 border border-black px-2 py-2 text-black rounded-lg"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                 />
-                <button onClick={sendComment}>Comment</button>
+                <button
+                    onClick={sendComment}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
+                >
+                    Comment
+                </button>
             </div>
 
             <div className="flex flex-col gap-10">

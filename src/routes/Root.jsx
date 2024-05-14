@@ -158,7 +158,11 @@ function Root() {
                 <Photo url={currentPhoto?.photoUrl ?? ""} />
             )}{" "}
             <Stars setRating={setRating} rating={rating} />
-            <button onClick={rate} disabled={isLoading}>
+            <button
+                onClick={rate}
+                disabled={isLoading}
+                className="bg-yellow-600 hover:bg-yellow-900 text-white font-bold py-2 px-4 rounded transition"
+            >
                 Rate!
             </button>{" "}
             <Comment photo={currentPhoto} uid={uid} />

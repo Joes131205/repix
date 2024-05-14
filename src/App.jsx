@@ -7,7 +7,12 @@ import Leaderboard from "./routes/Leaderboard";
 import ErrorPage from "./routes/ErrorPage";
 import Profile from "./routes/Profile";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    useLocation,
+} from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import { db, storage, auth } from "./firebase";
@@ -23,6 +28,24 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { ToastContainer } from "react-toastify";
 
 function App() {
+    const routeTitles = {
+        "/": "Home",
+        "/signin": "Sign In",
+        "/signup": "Sign Up",
+        "/upload": "Upload Photo",
+        "/leaderboard": "Leaderboard",
+        "/profile": "Profile",
+        "/setting": "Setting",
+        "*": "Error",
+    };
+    const location = useLocation();
+
+    useEffect(() => {
+        const pathname = location.pathname;
+        const title = "Repix | " + routeTitles[pathname] || "Repix";
+        document.title = title;
+    }, [location]);
+
     const [data, setData] = useState({
         reputation: 0,
         totalPhotosRated: 0,

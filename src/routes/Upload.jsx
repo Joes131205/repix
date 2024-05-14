@@ -119,7 +119,12 @@ function Upload(prop) {
                 src={photoReview || "/images/placeholder.png"}
                 className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500"
             />
-            <button onClick={uploadPhoto}>Upload!</button>
+            <button
+                onClick={uploadPhoto}
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+            >
+                Upload!
+            </button>
         </div>
     );
 }

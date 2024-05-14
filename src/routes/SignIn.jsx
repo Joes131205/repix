@@ -125,35 +125,58 @@ function SignIn(prop) {
 
     return (
         <div className="flex flex-col h-screen items-center justify-center gap-10">
-            <h1>Sign In</h1>
+            <h1 className="font-bold text-2xl">Sign In</h1>
             <form onSubmit={signInUser} className="flex flex-col gap-20">
-                <div className="flex gap-5">
+                <div className="flex gap-5 items-center justify-center">
                     <label htmlFor="email">Email</label>
                     <input
                         type="text"
                         name="email"
                         id="email"
                         value={data.email}
-                        className="text-white"
+                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         onChange={(e) =>
                             setData({ ...data, email: e.target.value })
                         }
                     />
                 </div>
-                <div className="flex gap-5">
+                <div className="flex gap-5 items-center justify-center">
                     <label htmlFor="password">Password</label>
                     <input
                         type="password"
                         name="password"
                         id="password"
-                        className="text-white"
+                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         value={data.password}
                     />
                 </div>
+                <input
+                    type="submit"
+                    value="Sign In!"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+                />
             </form>
             <p>{error}</p>
-            <button onClick={signInUserWithGoogle}>Sign In With Google</button>
-            <Link to="/signup">Don't have an account?</Link>
+            <button
+                onClick={signInUserWithGoogle}
+                className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
+            >
+                {" "}
+                <img
+                    src="/images/google-color-svgrepo-com.svg"
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                />{" "}
+                Sign In With Google{" "}
+                <img
+                    src="/images/google-color-svgrepo-com.svg"
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                />{" "}
+            </button>
+            <Link to="/signup" className="underline text-blue-400">
+                Don't have an account?
+            </Link>
         </div>
     );
 }

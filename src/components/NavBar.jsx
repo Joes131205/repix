@@ -82,7 +82,7 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                         Setting
                     </Link>
                     <button
-                        onClick={handleSignOut}
+                        onDoubleClick={handleSignOut}
                         className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
                     >
                         Sign Out
@@ -102,7 +102,22 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                     </button>
                 </div>
             ) : (
-                <h1 className="font-bold">Repix</h1>
+                <div className="flex gap-10 items-center justify-around">
+                    <h1 className="font-bold">Repix</h1>
+                    <button
+                        onClick={toggleDarkMode}
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        <img
+                            src={
+                                darkMode
+                                    ? "/images/light_mode.svg"
+                                    : "/images/dark_mode.svg"
+                            }
+                            className="w-8 h-8"
+                        />
+                    </button>
+                </div>
             )}
         </div>
     );
