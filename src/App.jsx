@@ -38,6 +38,7 @@ function App() {
         "/setting": "Setting",
         "*": "Error",
     };
+
     const location = useLocation();
 
     useEffect(() => {

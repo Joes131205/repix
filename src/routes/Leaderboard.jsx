@@ -28,9 +28,9 @@ function Leaderboard() {
 
     return (
         <div className="flex flex-col items-center justify-center gap-12">
-            <h1 className="font-bold">Leaderboard</h1>
+            <h1 className="font-bold text-2xl">Leaderboard</h1>
 
-            <table class="w-full table-auto">
+            <table class="w-[40%] table-auto">
                 <thead>
                     <tr>
                         <th class="px-4 py-2 text-center">Rank</th>
@@ -38,7 +38,8 @@ function Leaderboard() {
                         <th class="px-4 py-2 text-center">Total Reputation</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+
+                <tbody>
                     {users.map((user, i) => {
                         return (
                             <tr key={i}>

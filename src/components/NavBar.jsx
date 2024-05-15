@@ -89,8 +89,17 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                     </button>
                     <button
                         onClick={toggleDarkMode}
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        className="dark:text-white text-black hover:underline decoration-2 flex items-center justify-center gap-5 dark:decoration-white decoration-black"
                     >
+                        <img
+                            src={
+                                darkMode
+                                    ? "/images/light_mode.svg"
+                                    : "/images/dark_mode.svg"
+                            }
+                            className="w-8 h-8"
+                        />
+                        <p>{darkMode ? "Light Mode" : "Dark Mode"}</p>
                         <img
                             src={
                                 darkMode
@@ -108,6 +117,15 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                         onClick={toggleDarkMode}
                         className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
                     >
+                        <img
+                            src={
+                                darkMode
+                                    ? "/images/light_mode.svg"
+                                    : "/images/dark_mode.svg"
+                            }
+                            className="w-8 h-8"
+                        />
+                        <p>{darkMode ? "Light Mode" : "Dark Mode"}</p>
                         <img
                             src={
                                 darkMode

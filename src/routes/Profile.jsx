@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import Photo from "../components/Photo";
+
 function Profile(prop) {
     const [photos, setPhotos] = useState([]);
     useEffect(() => {
@@ -14,7 +16,7 @@ function Profile(prop) {
                     alt="Profile Picture"
                     className="w-32 h-32 rounded-full"
                 />
-                <h2>{prop.username}</h2>
+                <h2 className="font-bold">{prop.username}</h2>
             </div>
             <div className="flex flex-col gap-5">
                 <p>Total reputation: {prop.reputation}</p>
@@ -23,12 +25,7 @@ function Profile(prop) {
                 <div className="flex gap-10">
                     {photos
                         ? photos.map((photo) => (
-                              <img
-                                  key={photo.id}
-                                  src={photo.photoUrl}
-                                  alt="Photo"
-                                  className="w-96 h-96 max-w-96 max-h-96"
-                              />
+                              <Photo key={photo.id} url={photo.photoUrl} />
                           ))
                         : "None yet"}
                 </div>

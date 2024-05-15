@@ -151,7 +151,7 @@ function Root() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center gap-10">
+        <div className="flex flex-col items-center justify-center gap-10 mt-10">
             {isLoading ? (
                 <div>Loading...</div>
             ) : (

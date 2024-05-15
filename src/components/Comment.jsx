@@ -62,13 +62,15 @@ function Comment(prop) {
             </div>
 
             <div className="flex flex-col gap-10">
-                {comments.map((comment, i) => (
-                    <CommentUser
-                        comment={comment.comment}
-                        uid={comment.uid}
-                        key={i}
-                    />
-                ))}
+                {comments.length
+                    ? comments.map((comment, i) => (
+                          <CommentUser
+                              comment={comment.comment}
+                              uid={comment.uid}
+                              key={i}
+                          />
+                      ))
+                    : "No Comments yet!"}
             </div>
         </div>
     );

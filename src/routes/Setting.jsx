@@ -111,12 +111,14 @@ function Setting() {
                 />
             </div>
             <div className="w-screen flex flex-col items-center gap-2 justify-center">
-                <label htmlFor="username">Username</label>
+                <label htmlFor="username" className="font-bold">
+                    Username
+                </label>
                 <input
                     type="text"
                     name="username"
                     id="username"
-                    className="text-black"
+                    className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                     placeholder="Username..."
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -130,7 +132,9 @@ function Setting() {
             </div>
 
             <div className="flex flex-col items-center gap-2 justify-center">
-                <label htmlFor="profilePicture">Profile Picture</label>
+                <label htmlFor="profilePicture" className="font-bold">
+                    Profile Picture
+                </label>
                 <input
                     type="file"
                     name="profilePicture"
@@ -147,7 +151,12 @@ function Setting() {
                     Change Profile Picture
                 </button>
             </div>
-            <Link to="/">Go back</Link>
+            <Link
+                to="/"
+                className="bg-red-700 px-4 py-2 rounded-lg font-bold hover:bg-red-900 transition"
+            >
+                Go back
+            </Link>
         </div>
     );
 }

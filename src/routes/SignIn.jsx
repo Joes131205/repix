@@ -134,7 +134,7 @@ function SignIn(prop) {
                         name="email"
                         id="email"
                         value={data.email}
-                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         onChange={(e) =>
                             setData({ ...data, email: e.target.value })
                         }
@@ -146,7 +146,7 @@ function SignIn(prop) {
                         type="password"
                         name="password"
                         id="password"
-                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         value={data.password}
                     />
                 </div>
