@@ -32,10 +32,10 @@ function Leaderboard() {
 
             <table class="w-[40%] table-auto">
                 <thead>
-                    <tr>
-                        <th class="px-4 py-2 text-center">Rank</th>
-                        <th class="px-4 py-2 text-center">User</th>
-                        <th class="px-4 py-2 text-center">Total Reputation</th>
+                    <tr className="px-4 py-2 text-center">
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Total Reputation</th>
                     </tr>
                 </thead>
 
@@ -43,15 +43,19 @@ function Leaderboard() {
                     {users.map((user, i) => {
                         return (
                             <tr key={i}>
-                                <td class="px-4 py-2 text-center">{i + 1}</td>
-                                <td class="px-4 py-2 flex items-center justify-center gap-4">
+                                <td className="px-4 py-2 text-center">
+                                    {i + 1}
+                                </td>
+                                <td className="px-4 py-2 flex items-center justify-center gap-4">
                                     <img
                                         src={user.profilePicture}
-                                        class="w-10 h-10 rounded-full"
+                                        className="w-10 h-10 rounded-full"
                                     />
-                                    <p class=" font-medium">{user.username}</p>
+                                    <p className=" font-medium">
+                                        {user.username}
+                                    </p>
                                 </td>
-                                <td class="px-4 py-2 text-center">
+                                <td className="px-4 py-2 text-center">
                                     {user.reputation}
                                 </td>
                             </tr>

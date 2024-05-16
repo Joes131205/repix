@@ -36,14 +36,13 @@ function App() {
         "/leaderboard": "Leaderboard",
         "/profile": "Profile",
         "/setting": "Setting",
-        "*": "Error",
     };
 
     const location = useLocation();
 
     useEffect(() => {
         const pathname = location.pathname;
-        const title = "Repix | " + routeTitles[pathname] || "Repix";
+        const title = "Repix | " + (routeTitles[pathname] || "Error");
         document.title = title;
     }, [location]);
 
@@ -79,9 +78,7 @@ function App() {
     }
 
     async function fetchData(uid) {
-        console.log(uid);
         const docRef = doc(db, "users", uid);
-        console.log(docRef);
         const docSnap = await getDoc(docRef);
 
         const userData = docSnap.data();
@@ -93,7 +90,6 @@ function App() {
         setData({ ...userData });
     }
     const handleLogIn = () => {
-        console.log(uid);
         setIsLoggedIn(true);
         fetchData(uid);
         getAllPhotos(uid);

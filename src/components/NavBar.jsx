@@ -115,7 +115,7 @@ function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
                     <h1 className="font-bold">Repix</h1>
                     <button
                         onClick={toggleDarkMode}
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        className="dark:text-white text-black hover:underline decoration-2 flex items-center justify-center gap-5 dark:decoration-white decoration-black"
                     >
                         <img
                             src={
