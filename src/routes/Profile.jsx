@@ -4,6 +4,15 @@ import Photo from "../components/Photo";
 
 function Profile(prop) {
     const [photos, setPhotos] = useState([]);
+    const [textHover, setTextHover] = useState("");
+    const [hover, setHover] = useState(false);
+    async function onHover(e) {
+        setHover(true);
+    }
+    async function onHoverOver(e) {
+        setHover(false);
+    }
+
     useEffect(() => {
         setPhotos(prop.photos);
     }, [prop]);
@@ -30,7 +39,13 @@ function Profile(prop) {
                     <div className="flex gap-10 flex-wrap items-center justify-center">
                         {photos
                             ? photos.map((photo) => (
-                                  <Photo key={photo.id} url={photo.photoUrl} />
+                                  <div
+                                      className={`w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 bg-[url(${photo.photoUrl})]`}
+                                      onMouseEnter={onHover}
+                                      onMouseLeave={onHoverOver}
+                                  >
+                                      {hover ? "hover me" : "hovered"}
+                                  </div>
                               ))
                             : "None yet"}
                     </div>
