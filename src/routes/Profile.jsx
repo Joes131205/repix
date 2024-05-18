@@ -40,12 +40,16 @@ function Profile(prop) {
                         {photos
                             ? photos.map((photo) => (
                                   <div
-                                      className={`w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 bg-[url(${photo.photoUrl})]`}
+                                      key={`${photo.id}_${photo.createdAt}`}
+                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 hover:brightness-50 hover:backdrop-brightness-50"
+                                      style={{
+                                          backgroundImage: `url('${photo.photoUrl}')`,
+                                          backgroundSize: "cover",
+                                          backgroundRepeat: "no-repeat",
+                                      }}
                                       onMouseEnter={onHover}
                                       onMouseLeave={onHoverOver}
-                                  >
-                                      {hover ? "hover me" : "hovered"}
-                                  </div>
+                                  ></div>
                               ))
                             : "None yet"}
                     </div>
