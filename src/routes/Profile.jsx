@@ -4,14 +4,6 @@ import Photo from "../components/Photo";
 
 function Profile(prop) {
     const [photos, setPhotos] = useState([]);
-    const [textHover, setTextHover] = useState("");
-    const [hover, setHover] = useState(false);
-    async function onHover(e) {
-        setHover(true);
-    }
-    async function onHoverOver(e) {
-        setHover(false);
-    }
 
     useEffect(() => {
         setPhotos(prop.photos);
@@ -41,15 +33,20 @@ function Profile(prop) {
                             ? photos.map((photo) => (
                                   <div
                                       key={`${photo.id}_${photo.createdAt}`}
-                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 hover:brightness-50 hover:backdrop-brightness-50"
+                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 hover:brightness-50 hover:backdrop-brightness-50 text-transparent hover:text-white flex flex-col items-center justify-center"
                                       style={{
                                           backgroundImage: `url('${photo.photoUrl}')`,
                                           backgroundSize: "cover",
                                           backgroundRepeat: "no-repeat",
                                       }}
-                                      onMouseEnter={onHover}
+                                      onMouseEnter={(e) => onHover(photo)}
                                       onMouseLeave={onHoverOver}
-                                  ></div>
+                                  >
+                                      <p>Reputation: {photo.reputation}</p>
+                                      <p>
+                                          Created At: {photo.createdAt.seconds}
+                                      </p>
+                                  </div>
                               ))
                             : "None yet"}
                     </div>
