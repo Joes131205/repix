@@ -6,7 +6,7 @@ function Profile(prop) {
     const [photos, setPhotos] = useState([]);
 
     useEffect(() => {
-        setPhotos(prop.photos);
+        setPhotos(prop.photos.sort((a, b) => b.reputation - a.reputation));
     }, [prop]);
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10 mb-14">
@@ -33,19 +33,32 @@ function Profile(prop) {
                             ? photos.map((photo) => (
                                   <div
                                       key={`${photo.id}_${photo.createdAt}`}
-                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 hover:brightness-50 hover:backdrop-brightness-50 text-transparent hover:text-white flex flex-col items-center justify-center"
+                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition"
                                       style={{
                                           backgroundImage: `url('${photo.photoUrl}')`,
                                           backgroundSize: "cover",
                                           backgroundRepeat: "no-repeat",
                                       }}
-                                      onMouseEnter={(e) => onHover(photo)}
-                                      onMouseLeave={onHoverOver}
                                   >
-                                      <p>Reputation: {photo.reputation}</p>
-                                      <p>
-                                          Created At: {photo.createdAt.seconds}
-                                      </p>
+                                      <div className="">
+                                          <p>Reputation: {photo.reputation}</p>
+                                          <p>
+                                              Created At:{" "}
+                                              {new Intl.DateTimeFormat(
+                                                  navigator.language,
+                                                  {
+                                                      hour: "numeric",
+                                                      minute: "numeric",
+                                                      day: "numeric",
+                                                      month: "numeric",
+                                                      year: "numeric",
+                                                      weekday: "long", // Use "narrow", "short", or "long"
+                                                  }
+                                              ).format(
+                                                  photo.createdAt.seconds * 1000
+                                              )}
+                                          </p>
+                                      </div>
                                   </div>
                               ))
                             : "None yet"}
