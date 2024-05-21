@@ -33,7 +33,7 @@ function Profile(prop) {
                             ? photos.map((photo) => (
                                   <div
                                       key={`${photo.id}_${photo.createdAt}`}
-                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition"
+                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition select-none"
                                       style={{
                                           backgroundImage: `url('${photo.photoUrl}')`,
                                           backgroundSize: "cover",
@@ -52,7 +52,7 @@ function Profile(prop) {
                                                       day: "numeric",
                                                       month: "numeric",
                                                       year: "numeric",
-                                                      weekday: "long", // Use "narrow", "short", or "long"
+                                                      weekday: "long",
                                                   }
                                               ).format(
                                                   photo.createdAt.seconds * 1000

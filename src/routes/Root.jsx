@@ -30,7 +30,7 @@ function Root() {
         setAttempts(0);
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
-
+        console.log(querySnapshot);
         if (querySnapshot.size === 0) {
             setIsLoading(false);
             return;

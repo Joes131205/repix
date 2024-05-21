@@ -111,7 +111,7 @@ function Upload(prop) {
     }
 
     return (
-        <div className="h-screen flex flex-col items-center justify-center gap-10">
+        <div className=" flex flex-col items-center justify-center gap-10">
             <h1 className="text-2xl font-bold">Upload Photo</h1>
             <p>NOTE: We only accepts PNG :)</p>
             <input type="file" onChange={previewImage} accept="image/png" />
@@ -121,7 +121,7 @@ function Upload(prop) {
             />
             <button
                 onClick={uploadPhoto}
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
             >
                 Upload!
             </button>
