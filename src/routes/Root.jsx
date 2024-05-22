@@ -28,34 +28,51 @@ function Root() {
     async function fetchRandomPhoto() {
         setIsLoading(true);
         setAttempts(0);
+
         const photosCollection = collection(db, "photos");
-        const querySnapshot = await getDocs(photosCollection);
-        console.log(querySnapshot);
-        if (querySnapshot.size === 0) {
+
+        try {
+            const querySnapshot = await getDocs(photosCollection);
+
+            if (querySnapshot.empty) {
+                setIsLoading(false);
+                return;
+            }
+
+            const filteredData = [];
+            for (const doc of querySnapshot.docs) {
+                if (doc.exists) {
+                    filteredData.push({ ...doc.data(), id: doc.id });
+                } else {
+                    console.error("Document not found:", doc.id);
+                }
+            }
+
+            const photo = getRandomPhotoWithoutDuplicates(filteredData, uid);
+            if (photo) {
+                setCurrentPhoto(photo);
+            } else {
+                console.log("No more photos to fetch.");
+            }
+        } catch (error) {
+            console.error("Error fetching photos:", error);
+        } finally {
             setIsLoading(false);
-            return;
+            setAttempts(attempts + 1);
         }
+    }
 
-        let randomPhotoDoc;
-        let data;
-        do {
-            const randomIndex = Math.floor(Math.random() * querySnapshot.size);
-            randomPhotoDoc = querySnapshot.docs[randomIndex];
-            data = randomPhotoDoc.data();
-            console.log("same photo!");
-        } while (data.uid === uid && attempts < querySnapshot.size);
-
-        if (attempts < querySnapshot.size) {
-            setCurrentPhoto({
-                ...data,
-                id: randomPhotoDoc.id,
-            });
-        } else {
-            console.log("No more photos to fetch.");
+    function getRandomPhotoWithoutDuplicates(data, uid) {
+        let attempts = 0;
+        while (attempts < data.length) {
+            const randomIndex = Math.floor(Math.random() * data.length);
+            const photo = data[randomIndex];
+            if (photo.uid !== uid) {
+                return photo;
+            }
+            attempts++;
         }
-
-        setIsLoading(false);
-        setAttempts(attempts + 1);
+        return null;
     }
 
     async function updatePhoto(data) {
