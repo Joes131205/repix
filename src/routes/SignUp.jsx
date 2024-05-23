@@ -43,6 +43,12 @@ function SignUp(prop) {
                 reputation: 0,
                 bestRatedPhoto: "",
                 totalPhotosRated: 0,
+                totalPhotosDaily: {
+                    rated: 0,
+                    uploaded: 0,
+                    timeLastRated: "",
+                    timeLastUploaded: "",
+                },
             });
         } catch (err) {
             console.error("Error adding document: ", err);
