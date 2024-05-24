@@ -27,6 +27,11 @@ import { getDownloadURL, ref } from "firebase/storage";
 
 import { ToastContainer } from "react-toastify";
 
+import {
+    userDataContext,
+    userDataProvider,
+} from "./components/UserDataContext";
+
 function App() {
     const routeTitles = {
         "/": "Home",
@@ -52,6 +57,7 @@ function App() {
         uploaded: 0,
         username: "",
         profilePicture: "",
+        loading: true,
     });
     const [totalPhotos, setTotalPhotos] = useState([]);
 
@@ -87,7 +93,7 @@ function App() {
         const url = await getDownloadURL(storageRef);
         userData.profilePicture = url;
 
-        setData({ ...userData });
+        setData({ ...userData, loading: false });
     }
     const handleLogIn = () => {
         setIsLoggedIn(true);
@@ -116,43 +122,45 @@ function App() {
     }, [uid]);
 
     return (
-        <div>
-            <NavBar
-                username={data.username}
-                profilePicture={data.profilePicture}
-                isLoggedIn={isLoggedIn}
-                onSignoutSuccess={handleSignout}
-            />
-            <Routes>
-                <Route path="/" element={<Root />} />
-                <Route
-                    path="/signin"
-                    element={<SignIn onSigninSuccess={handleLogIn} />}
+        <userDataContext.Provider value={{ data }}>
+            <div>
+                <NavBar
+                    username={data.username}
+                    profilePicture={data.profilePicture}
+                    isLoggedIn={isLoggedIn}
+                    onSignoutSuccess={handleSignout}
                 />
-                <Route
-                    path="/signup"
-                    element={<SignUp onSignupSuccess={handleLogIn} />}
-                />
-                <Route path="/upload" element={<Upload uid={uid} />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route
-                    path="/profile"
-                    element={
-                        <Profile
-                            username={data.username}
-                            profilePicture={data.profilePicture}
-                            reputation={data.reputation}
-                            totalPhotosRated={data.totalPhotosRated}
-                            photos={totalPhotos}
-                            uploaded={data.uploaded}
-                        />
-                    }
-                />
-                <Route path="/setting" element={<Setting />} />
-                <Route path="*" element={<ErrorPage />} />
-            </Routes>
-            <ToastContainer />
-        </div>
+                <Routes>
+                    <Route path="/" element={<Root />} />
+                    <Route
+                        path="/signin"
+                        element={<SignIn onSigninSuccess={handleLogIn} />}
+                    />
+                    <Route
+                        path="/signup"
+                        element={<SignUp onSignupSuccess={handleLogIn} />}
+                    />
+                    <Route path="/upload" element={<Upload uid={uid} />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route
+                        path="/profile"
+                        element={
+                            <Profile
+                                username={data.username}
+                                profilePicture={data.profilePicture}
+                                reputation={data.reputation}
+                                totalPhotosRated={data.totalPhotosRated}
+                                photos={totalPhotos}
+                                uploaded={data.uploaded}
+                            />
+                        }
+                    />
+                    <Route path="/setting" element={<Setting />} />
+                    <Route path="*" element={<ErrorPage />} />
+                </Routes>
+                <ToastContainer />
+            </div>
+        </userDataContext.Provider>
     );
 }
 

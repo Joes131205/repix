@@ -1,7 +1,8 @@
 import { createContext, useState, useEffect } from "react";
-import { getFirestore, collection, doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 
-import app from "../firebase";
+import { auth, db, storage } from "../firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const userDataContext = createContext();
 
@@ -21,23 +22,32 @@ const userDataProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        const db = getFirestore(app);
-        const userDocRef = doc(collection(db, "users"));
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userDocRef = doc(collection(db, "users"), user.uid);
 
-        const unsubscribe = onSnapshot(userDocRef, (doc) => {
-            if (doc.exists) {
-                setUserData(doc.data());
-            } else {
-                console.error("User document not found in Firestore");
+                const unsubscribeFirestore = onSnapshot(userDocRef, (doc) => {
+                    if (doc.exists) {
+                        setUserData(doc.data());
+                    } else {
+                        console.error("User document not found in Firestore");
+                    }
+                });
+                return () => unsubscribeFirestore();
             }
+            return unsubscribe;
         });
 
-        return unsubscribe;
+        return () => {
+            unsubscribe();
+        };
     }, [app]);
 
     const updateUserData = async (newData) => {
-        const db = getFirestore(app);
-        const userDocRef = doc(collection(db, "users"));
+        const userDocRef = doc(
+            collection(db, "users"),
+            getAuth(app).currentUser.uid
+        );
 
         try {
             await doc(userDocRef).update(newData);
@@ -54,4 +64,4 @@ const userDataProvider = ({ children }) => {
     );
 };
 
-return { userDataContext, userDataProvider };
+export { userDataContext, userDataProvider };
