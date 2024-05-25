@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { db, storage, auth } from "../firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserDataContext } from "../components/UserDataContext";
 
 function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
+    const { userData } = useContext(UserDataContext);
+    console.log(userData);
     const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState(false);
     const handleSignOut = () => {

@@ -1,12 +1,11 @@
 import { createContext, useState, useEffect } from "react";
 import { collection, doc, onSnapshot } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 
-import { auth, db, storage } from "../firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+const UserDataContext = createContext();
 
-const userDataContext = createContext();
-
-const userDataProvider = ({ children }) => {
+const UserDataProvider = ({ children }) => {
     const [userData, setUserData] = useState({
         username: "",
         uploaded: 0,
@@ -41,12 +40,12 @@ const userDataProvider = ({ children }) => {
         return () => {
             unsubscribe();
         };
-    }, [app]);
+    }, []);
 
     const updateUserData = async (newData) => {
         const userDocRef = doc(
             collection(db, "users"),
-            getAuth(app).currentUser.uid
+            getAuth().currentUser.uid
         );
 
         try {
@@ -57,11 +56,13 @@ const userDataProvider = ({ children }) => {
         }
     };
 
+    console.log("Children passed to userDataProvider:", children);
+
     return (
-        <userDataContext.Provider value={{ userData, updateUserData }}>
+        <UserDataContext.Provider value={{ userData, updateUserData }}>
             {children}
-        </userDataContext.Provider>
+        </UserDataContext.Provider>
     );
 };
 
-export { userDataContext, userDataProvider };
+export { UserDataContext, UserDataProvider };
