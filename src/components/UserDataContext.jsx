@@ -18,6 +18,7 @@ const UserDataProvider = ({ children }) => {
             timeLastRated: "",
             timeLastUploaded: "",
         },
+        uid: "",
     });
 
     useEffect(() => {
@@ -27,6 +28,7 @@ const UserDataProvider = ({ children }) => {
 
                 const unsubscribeFirestore = onSnapshot(userDocRef, (doc) => {
                     if (doc.exists) {
+                        console.log(doc.data());
                         setUserData(doc.data());
                     } else {
                         console.error("User document not found in Firestore");

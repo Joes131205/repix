@@ -64,6 +64,12 @@ function SignIn(prop) {
                     reputation: 0,
                     bestRatedPhoto: "",
                     totalPhotosRated: 0,
+                    totalPhotosDaily: {
+                        rated: 0,
+                        uploaded: 0,
+                        timeLastRated: "",
+                        timeLastUploaded: "",
+                    },
                 });
                 const image = "/images/default_profile_picture.png";
                 const response = await fetch(image);

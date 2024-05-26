@@ -5,7 +5,9 @@ import { db, storage, auth } from "../firebase";
 import { useState, useEffect, useContext } from "react";
 import { UserDataContext } from "../components/UserDataContext";
 
-function NavBar({ isLoggedIn, username, profilePicture, onSignoutSuccess }) {
+function NavBar({ isLoggedIn, onSignoutSuccess }) {
+    console.log(UserDataContext);
+    console.log(useContext(UserDataContext));
     const { userData } = useContext(UserDataContext);
     console.log(userData);
     const navigate = useNavigate();

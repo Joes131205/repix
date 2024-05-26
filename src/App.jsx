@@ -52,6 +52,13 @@ function App() {
         uploaded: 0,
         username: "",
         profilePicture: "",
+        totalPhotosDaily: {
+            rated: 0,
+            uploaded: 0,
+            timeLastRated: "",
+            timeLastUploaded: "",
+        },
+        uid: "",
         loading: true,
     });
     const [totalPhotos, setTotalPhotos] = useState([]);
@@ -130,21 +137,9 @@ function App() {
                 path="/signup"
                 element={<SignUp onSignupSuccess={handleLogIn} />}
             />
-            <Route path="/upload" element={<Upload uid={uid} />} />
+            <Route path="/upload" element={<Upload />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route
-                path="/profile"
-                element={
-                    <Profile
-                        username={data.username}
-                        profilePicture={data.profilePicture}
-                        reputation={data.reputation}
-                        totalPhotosRated={data.totalPhotosRated}
-                        photos={totalPhotos}
-                        uploaded={data.uploaded}
-                    />
-                }
-            />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/setting" element={<Setting />} />
             <Route path="*" element={<ErrorPage />} />
         </Routes>
@@ -153,16 +148,11 @@ function App() {
     console.log("Children passed to userDataProvider:", routes);
 
     return (
-        <userDataProvider>
-            <NavBar
-                username={data.username}
-                profilePicture={data.profilePicture}
-                isLoggedIn={isLoggedIn}
-                onSignoutSuccess={handleSignout}
-            />
+        <UserDataProvider>
+            <NavBar isLoggedIn={isLoggedIn} onSignoutSuccess={handleSignout} />
             {routes}
             <ToastContainer />
-        </userDataProvider>
+        </UserDataProvider>
     );
 }
 
