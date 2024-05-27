@@ -6,8 +6,6 @@ import { useState, useEffect, useContext } from "react";
 import { UserDataContext } from "../components/UserDataContext";
 
 function NavBar({ isLoggedIn, onSignoutSuccess }) {
-    console.log(UserDataContext);
-    console.log(useContext(UserDataContext));
     const { userData } = useContext(UserDataContext);
     console.log(userData);
     const navigate = useNavigate();
@@ -54,12 +52,13 @@ function NavBar({ isLoggedIn, onSignoutSuccess }) {
                         >
                             <img
                                 src={
-                                    profilePicture || "/images/placeholder.png"
+                                    userData.profilePicture ||
+                                    "/images/placeholder.png"
                                 }
                                 alt="Profile Picture"
                                 className="w-10 h-10 rounded-full"
                             />
-                            <h1 className="font-bold">{username}</h1>
+                            <h1 className="font-bold">{userData.username}</h1>
                         </Link>
                     </div>
                     <Link

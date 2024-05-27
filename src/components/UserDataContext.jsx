@@ -24,6 +24,7 @@ const UserDataProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
+                console.log("Signed In");
                 const userDocRef = doc(collection(db, "users"), user.uid);
 
                 const unsubscribeFirestore = onSnapshot(userDocRef, (doc) => {
@@ -35,6 +36,8 @@ const UserDataProvider = ({ children }) => {
                     }
                 });
                 return () => unsubscribeFirestore();
+            } else {
+                console.log("No user signed in.");
             }
             return unsubscribe;
         });
@@ -53,6 +56,7 @@ const UserDataProvider = ({ children }) => {
         try {
             await doc(userDocRef).update(newData);
             setUserData({ ...userData, ...newData });
+            console.log(userData);
         } catch (error) {
             console.error("Error updating user data in Firestore:", error);
         }
