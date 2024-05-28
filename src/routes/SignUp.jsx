@@ -31,7 +31,7 @@ function SignUp(prop) {
 
     const [error, setError] = useState("");
 
-    async function storeUsernameAndData(uid, username) {
+    async function storeUsernameAndData(uid, username, profilePhotoUrl) {
         if (!username) {
             username = `user_${uid.slice(1, 5)}`;
         }
@@ -49,6 +49,7 @@ function SignUp(prop) {
                     timeLastRated: "",
                     timeLastUploaded: "",
                 },
+                profilePhotoUrl,
             });
         } catch (err) {
             console.error("Error adding document: ", err);
@@ -72,8 +73,14 @@ function SignUp(prop) {
             await createUserWithEmailAndPassword(auth, email, password)
                 .then(async (userCredential) => {
                     const user = userCredential.user;
-                    await storeDefaultProfilePicture(user.uid);
-                    await storeUsernameAndData(user.uid, username);
+                    const profilePhotoUrl = await storeDefaultProfilePicture(
+                        user.uid
+                    );
+                    await storeUsernameAndData(
+                        user.uid,
+                        username,
+                        profilePhotoUrl
+                    );
                     await sendEmailVerification();
                     toast.success("Signed Up! Email verification sent!", {
                         position: "bottom-right",
@@ -99,7 +106,6 @@ function SignUp(prop) {
                 });
         }
     }
-
     async function signUpUserWithGoogle() {
         try {
             const result = await signInWithPopup(auth, provider);

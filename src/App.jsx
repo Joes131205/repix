@@ -28,6 +28,7 @@ import {
 } from "./components/UserDataContext";
 
 function App() {
+    console.log(useContext(UserDataContext));
     const routeTitles = {
         "/": "Home",
         "/signin": "Sign In",
@@ -45,23 +46,6 @@ function App() {
         const title = "Repix | " + (routeTitles[pathname] || "Error");
         document.title = title;
     }, [location]);
-
-    const [data, setData] = useState({
-        reputation: 0,
-        totalPhotosRated: 0,
-        uploaded: 0,
-        username: "",
-        profilePicture: "",
-        totalPhotosDaily: {
-            rated: 0,
-            uploaded: 0,
-            timeLastRated: "",
-            timeLastUploaded: "",
-        },
-        uid: "",
-        loading: true,
-    });
-    const [totalPhotos, setTotalPhotos] = useState([]);
 
     const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);

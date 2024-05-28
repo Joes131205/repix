@@ -65,7 +65,15 @@ const UserDataProvider = ({ children }) => {
     console.log("Children passed to userDataProvider:", children);
 
     return (
-        <UserDataContext.Provider value={{ userData, updateUserData }}>
+        <UserDataContext.Provider
+            value={{
+                userData,
+                updateUserData: (newUserData) => {
+                    updateUserData(newUserData);
+                    setUserData(newUserData);
+                },
+            }}
+        >
             {children}
         </UserDataContext.Provider>
     );
