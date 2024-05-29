@@ -21,10 +21,11 @@ const UserDataProvider = ({ children }) => {
         uid: "",
     });
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log("Signed In");
                 const userDocRef = doc(collection(db, "users"), user.uid);
 
                 const unsubscribeFirestore = onSnapshot(userDocRef, (doc) => {
@@ -39,39 +40,37 @@ const UserDataProvider = ({ children }) => {
             } else {
                 console.log("No user signed in.");
             }
-            return unsubscribe;
         });
 
         return () => {
             unsubscribe();
         };
     }, []);
-
+    if (loading) {
+        return <div>Loading...</div>;
+    }
     const updateUserData = async (newData) => {
+        console.log("user data update commencing");
         const userDocRef = doc(
             collection(db, "users"),
             getAuth().currentUser.uid
         );
-
+        console.log("user data update commencing");
         try {
             await doc(userDocRef).update(newData);
-            setUserData({ ...userData, ...newData });
+            setUserData({ ...userData, ...newData, uid: currentUser.uid });
             console.log(userData);
         } catch (error) {
             console.error("Error updating user data in Firestore:", error);
         }
     };
 
-    console.log("Children passed to userDataProvider:", children);
-
     return (
         <UserDataContext.Provider
             value={{
                 userData,
-                updateUserData: (newUserData) => {
-                    updateUserData(newUserData);
-                    setUserData(newUserData);
-                },
+                updateUserData,
+                loading,
             }}
         >
             {children}
