@@ -46,9 +46,6 @@ const UserDataProvider = ({ children }) => {
             unsubscribe();
         };
     }, []);
-    if (loading) {
-        return <div>Loading...</div>;
-    }
     const updateUserData = async (newData) => {
         console.log("user data update commencing");
         const userDocRef = doc(

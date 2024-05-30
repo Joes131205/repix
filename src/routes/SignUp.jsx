@@ -10,7 +10,7 @@ import {
     sendEmailVerification,
 } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { toast, Bounce } from "react-toastify";
 
@@ -50,20 +50,40 @@ function SignUp(prop) {
                     timeLastUploaded: "",
                 },
                 profilePhotoUrl,
+                uid,
             });
+            console.log("user created");
         } catch (err) {
             console.error("Error adding document: ", err);
         }
     }
 
     async function storeDefaultProfilePicture(uid) {
-        const image = "/images/default_profile_picture.png";
-        const response = await fetch(image);
-        const blob = await response.blob();
-        const newFileName = `${uid}.png`;
-        const storageRef = ref(storage, `profile-pictures/${newFileName}`);
-        const metadata = { contentType: "image/png" };
-        await uploadBytes(storageRef, blob, metadata);
+        try {
+            const image = "/images/default_profile_picture.png";
+            const response = await fetch(image);
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch default profile picture");
+            }
+
+            const blob = await response.blob();
+
+            const newFileName = `${uid}.png`;
+
+            const storageRef = ref(storage, `profile-pictures/${newFileName}`);
+
+            const metadata = { contentType: "image/png" };
+
+            const uploadTask = uploadBytes(storageRef, blob, metadata);
+            await uploadTask;
+
+            const downloadURL = await getDownloadURL(storageRef);
+            return downloadURL;
+        } catch (error) {
+            console.error("Error storing default profile picture:", error);
+            return null;
+        }
     }
 
     async function signUpUser(e) {
@@ -110,8 +130,9 @@ function SignUp(prop) {
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            await storeUsernameAndData(user.uid);
-            await storeDefaultProfilePicture(user.uid);
+
+            const profilePhotoUrl = await storeDefaultProfilePicture(user.uid);
+            await storeUsernameAndData(user.uid, uid, profilePhotoUrl);
             toast.success("Signed Up! Email verification sent!", {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -211,7 +232,7 @@ function SignUp(prop) {
                 <input
                     type="submit"
                     value="Sign Up!"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
                 />
             </form>
             <p>{error}</p>

@@ -29,9 +29,6 @@ import {
 
 function App() {
     const { userData, loading } = useContext(UserDataContext);
-    if (loading) {
-        return <div>Loading...</div>; // Render a loading indicator
-    }
     const routeTitles = {
         "/": "Home",
         "/signin": "Sign In",
