@@ -28,7 +28,8 @@ import {
 } from "./components/UserDataContext";
 
 function App() {
-    const { userData, loading } = useContext(UserDataContext);
+    const { userData } = useContext(UserDataContext);
+
     const routeTitles = {
         "/": "Home",
         "/signin": "Sign In",
@@ -47,19 +48,18 @@ function App() {
         document.title = title;
     }, [location]);
 
-    const [uid, setUid] = useState("");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const navigate = useNavigate();
 
-    async function getAllPhotos(uid) {
+    async function getAllPhotos() {
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
         if (querySnapshot.length === 0) return;
         const photoData = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            if (data.uid === uid) {
+            if (data.uid === userData.uid) {
                 photoData.push(data);
             }
         });
@@ -69,23 +69,9 @@ function App() {
         }
     }
 
-    async function fetchData(uid) {
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-
-        const userData = docSnap.data();
-
-        const storageRef = ref(storage, `profile-pictures/${uid}.png`);
-        const url = await getDownloadURL(storageRef);
-        userData.profilePicture = url;
-
-        setData({ ...userData, loading: false });
-    }
-
     const handleLogIn = () => {
         setIsLoggedIn(true);
-        fetchData(uid);
-        getAllPhotos(uid);
+        getAllPhotos();
     };
 
     const handleSignout = () => {
@@ -93,22 +79,10 @@ function App() {
     };
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUid(user.uid);
-            } else {
-                navigate("/signup");
-            }
-        });
-
-        return () => unsubscribe();
-    }, []);
-
-    useEffect(() => {
-        if (uid) {
+        if (userData.uid) {
             handleLogIn();
         }
-    }, [uid]);
+    }, [userData.uid]);
 
     const routes = (
         <Routes>

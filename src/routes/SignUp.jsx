@@ -32,6 +32,7 @@ function SignUp(prop) {
     const [error, setError] = useState("");
 
     async function storeUsernameAndData(uid, username, profilePhotoUrl) {
+        console.log("creating username and data");
         if (!username) {
             username = `user_${uid.slice(1, 5)}`;
         }
@@ -132,7 +133,7 @@ function SignUp(prop) {
             const user = result.user;
 
             const profilePhotoUrl = await storeDefaultProfilePicture(user.uid);
-            await storeUsernameAndData(user.uid, uid, profilePhotoUrl);
+            await storeUsernameAndData(user.uid, "", profilePhotoUrl);
             toast.success("Signed Up! Email verification sent!", {
                 position: "bottom-right",
                 autoClose: 5000,

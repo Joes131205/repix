@@ -1,29 +1,32 @@
 import { useEffect, useState } from "react";
 
-import Photo from "../components/Photo";
-
 function Profile(prop) {
+    const { userData } = useContext(UserDataContext);
+
     const [photos, setPhotos] = useState([]);
 
     useEffect(() => {
         setPhotos(prop.photos.sort((a, b) => b.reputation - a.reputation));
     }, [prop]);
+
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10 mb-14">
             <h1 className="font-bold text-2xl">Your Profile</h1>
             <div className="flex flex-col gap-2">
                 <img
-                    src={prop.profilePicture || "/images/placeholder.png"}
+                    src={
+                        userData.profilePictureUrl || "/images/placeholder.png"
+                    }
                     alt="Profile Picture"
                     className="w-32 h-32 rounded-full"
                 />
-                <h2 className="font-bold text-xl">{prop.username}</h2>
+                <h2 className="font-bold text-xl">{userData.username}</h2>
             </div>
 
             <div className="flex flex-col gap-5 ">
-                <p>Total reputation: {prop.reputation}</p>
-                <p>Total photos rated: {prop.totalPhotosRated}</p>
-                <p>Photos uploaded: {prop.uploaded}</p>
+                <p>Total reputation: {userData.reputation}</p>
+                <p>Total photos rated: {userData.totalPhotosRated}</p>
+                <p>Photos uploaded: {userData.uploaded}</p>
                 <div className="flex flex-col gap-10">
                     <h2 className="text-2xl font-bold">
                         Your Photos (From most rated to least)

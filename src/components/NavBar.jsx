@@ -52,7 +52,7 @@ function NavBar({ isLoggedIn, onSignoutSuccess }) {
                         >
                             <img
                                 src={
-                                    userData.profilePicture ||
+                                    userData.profilePhotoUrl ||
                                     "/images/placeholder.png"
                                 }
                                 alt="Profile Picture"
