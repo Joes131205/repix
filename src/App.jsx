@@ -6,10 +6,6 @@ import {
     useLocation,
     useNavigate,
 } from "react-router-dom";
-import { db, storage, auth } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { getDownloadURL, ref } from "firebase/storage";
 import { ToastContainer } from "react-toastify";
 
 import Root from "./routes/Root";
@@ -41,7 +37,7 @@ function App() {
     };
 
     const location = useLocation();
-
+    const navigate = useNavigate();
     useEffect(() => {
         const pathname = location.pathname;
         const title = "Repix | " + (routeTitles[pathname] || "Error");
@@ -50,28 +46,8 @@ function App() {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const navigate = useNavigate();
-
-    async function getAllPhotos() {
-        const photosCollection = collection(db, "photos");
-        const querySnapshot = await getDocs(photosCollection);
-        if (querySnapshot.length === 0) return;
-        const photoData = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            if (data.uid === userData.uid) {
-                photoData.push(data);
-            }
-        });
-
-        if (photoData) {
-            setTotalPhotos(photoData);
-        }
-    }
-
     const handleLogIn = () => {
         setIsLoggedIn(true);
-        getAllPhotos();
     };
 
     const handleSignout = () => {
@@ -81,6 +57,8 @@ function App() {
     useEffect(() => {
         if (userData.uid) {
             handleLogIn();
+        } else {
+            navigate("/signup");
         }
     }, [userData.uid]);
 

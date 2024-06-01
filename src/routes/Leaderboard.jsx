@@ -30,7 +30,7 @@ function Leaderboard() {
         <div className="flex flex-col items-center justify-center gap-12">
             <h1 className="font-bold text-2xl">Leaderboard</h1>
 
-            <table class="w-[40%] table-auto">
+            <table className="w-[40%] table-auto">
                 <thead>
                     <tr className="px-4 py-2 text-center">
                         <th>Rank</th>

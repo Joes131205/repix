@@ -10,7 +10,7 @@ import {
     onSnapshot,
 } from "firebase/firestore";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import { db, storage, auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -18,12 +18,14 @@ import { onAuthStateChanged } from "firebase/auth";
 import Stars from "../components/Stars";
 
 import { toast, Bounce } from "react-toastify";
+
+import { UserDataContext } from "../components/UserDataContext";
 function Root() {
     const [currentPhoto, setCurrentPhoto] = useState({});
-    const [uid, setUid] = useState("");
     const [rating, setRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0);
+    const { userData } = useContext(UserDataContext);
 
     async function fetchRandomPhoto() {
         setIsLoading(true);
@@ -48,7 +50,10 @@ function Root() {
                 }
             }
 
-            const photo = getRandomPhotoWithoutDuplicates(filteredData, uid);
+            const photo = getRandomPhotoWithoutDuplicates(
+                filteredData,
+                userData.uid
+            );
             if (photo) {
                 setCurrentPhoto(photo);
             } else {
@@ -62,12 +67,12 @@ function Root() {
         }
     }
 
-    function getRandomPhotoWithoutDuplicates(data, uid) {
+    function getRandomPhotoWithoutDuplicates(data) {
         let attempts = 0;
         while (attempts < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
-            if (photo.uid !== uid) {
+            if (photo.uid !== userData.uid) {
                 return photo;
             }
             attempts++;
@@ -88,7 +93,7 @@ function Root() {
 
     async function updateProfile() {
         try {
-            const docRef = doc(db, "users", uid);
+            const docRef = doc(db, "users", userData.uid);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
             await updateDoc(docRef, {
@@ -158,15 +163,6 @@ function Root() {
         fetchRandomPhoto();
     }, []);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUid(user.uid);
-            }
-        });
-        return unsubscribe;
-    }, []);
-
     return (
         <div className="flex flex-col items-center justify-center gap-10 mt-10">
             {isLoading ? (
@@ -174,15 +170,21 @@ function Root() {
             ) : (
                 <Photo url={currentPhoto?.photoUrl ?? ""} />
             )}{" "}
-            <Stars setRating={setRating} rating={rating} />
-            <button
-                onClick={rate}
-                disabled={isLoading}
-                className="bg-yellow-600 hover:bg-yellow-900 text-white font-bold py-2 px-4 rounded transition"
-            >
-                Rate!
-            </button>{" "}
-            <Comment photo={currentPhoto} uid={uid} />
+            {currentPhoto ? (
+                <>
+                    <Stars setRating={setRating} rating={rating} />
+                    <button
+                        onClick={rate}
+                        disabled={isLoading}
+                        className="bg-yellow-600 hover:bg-yellow-900 text-white font-bold py-2 px-4 rounded transition"
+                    >
+                        Rate!
+                    </button>{" "}
+                    <Comment photo={currentPhoto} uid={userData.uid} />{" "}
+                </>
+            ) : (
+                <p>No photos left :(</p>
+            )}
         </div>
     );
 }

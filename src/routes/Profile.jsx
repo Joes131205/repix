@@ -1,22 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { UserDataContext } from "../components/UserDataContext";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
-function Profile(prop) {
+function Profile() {
     const { userData } = useContext(UserDataContext);
 
     const [photos, setPhotos] = useState([]);
 
+    async function getAllPhotos() {
+        const photosCollection = collection(db, "photos");
+        const querySnapshot = await getDocs(photosCollection);
+        if (querySnapshot.length === 0) return;
+        const photoData = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.uid === userData.uid) {
+                photoData.push(data);
+            }
+        });
+
+        if (photoData) {
+            setPhotos(photoData);
+            setPhotos(photos.sort((a, b) => b.reputation - a.reputation));
+        }
+    }
     useEffect(() => {
-        setPhotos(prop.photos.sort((a, b) => b.reputation - a.reputation));
-    }, [prop]);
+        getAllPhotos();
+    }, []);
 
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10 mb-14">
             <h1 className="font-bold text-2xl">Your Profile</h1>
             <div className="flex flex-col gap-2">
                 <img
-                    src={
-                        userData.profilePictureUrl || "/images/placeholder.png"
-                    }
+                    src={userData.profilePhotoUrl || "/images/placeholder.png"}
                     alt="Profile Picture"
                     className="w-32 h-32 rounded-full"
                 />
@@ -32,39 +50,41 @@ function Profile(prop) {
                         Your Photos (From most rated to least)
                     </h2>
                     <div className="flex gap-10 flex-wrap items-center justify-center">
-                        {photos
-                            ? photos.map((photo) => (
-                                  <div
-                                      key={`${photo.id}_${photo.createdAt}`}
-                                      className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition select-none"
-                                      style={{
-                                          backgroundImage: `url('${photo.photoUrl}')`,
-                                          backgroundSize: "cover",
-                                          backgroundRepeat: "no-repeat",
-                                      }}
-                                  >
-                                      <div className="">
-                                          <p>Reputation: {photo.reputation}</p>
-                                          <p>
-                                              Created At:{" "}
-                                              {new Intl.DateTimeFormat(
-                                                  navigator.language,
-                                                  {
-                                                      hour: "numeric",
-                                                      minute: "numeric",
-                                                      day: "numeric",
-                                                      month: "numeric",
-                                                      year: "numeric",
-                                                      weekday: "long",
-                                                  }
-                                              ).format(
-                                                  photo.createdAt.seconds * 1000
-                                              )}
-                                          </p>
-                                      </div>
-                                  </div>
-                              ))
-                            : "None yet"}
+                        {photos.length ? (
+                            photos.map((photo) => (
+                                <div
+                                    key={`${photo.id}_${photo.createdAt}`}
+                                    className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition select-none"
+                                    style={{
+                                        backgroundImage: `url('${photo.photoUrl}')`,
+                                        backgroundSize: "cover",
+                                        backgroundRepeat: "no-repeat",
+                                    }}
+                                >
+                                    <div className="">
+                                        <p>Reputation: {photo.reputation}</p>
+                                        <p>
+                                            Created At:{" "}
+                                            {new Intl.DateTimeFormat(
+                                                navigator.language,
+                                                {
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    day: "numeric",
+                                                    month: "numeric",
+                                                    year: "numeric",
+                                                    weekday: "long",
+                                                }
+                                            ).format(
+                                                photo.createdAt.seconds * 1000
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p>None yet!</p>
+                        )}
                     </div>
                 </div>
             </div>

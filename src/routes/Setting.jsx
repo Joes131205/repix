@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
 import { db, storage, auth } from "../firebase";
 
@@ -10,25 +10,15 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { UserDataContext } from "../components/UserDataContext";
+
 function Setting() {
     const [username, setUsername] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
     const [profilePictureReview, setProfilePictureReview] = useState("");
+    const { userData } = useContext(UserDataContext);
 
     const navigate = useNavigate();
-
-    async function fetchUserName(uid) {
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-        const data = docSnap.data();
-        setUsername(data.username);
-    }
-
-    async function fetchProfilePicture(uid) {
-        const storageRef = ref(storage, `profile-pictures/${uid}.png`);
-        const url = await getDownloadURL(storageRef);
-        setProfilePictureReview(url);
-    }
 
     async function changeUsername() {
         try {
@@ -68,6 +58,9 @@ function Setting() {
             transition: Bounce,
         });
         window.location.reload();
+        const url = await getDownloadURL(storageRef);
+        const userRef = doc(db, "users", userData.uid);
+        await updateDoc(userRef);
     }
 
     async function changeProfilePictureReview(e) {
@@ -92,8 +85,8 @@ function Setting() {
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                await fetchUserName(user.uid);
-                await fetchProfilePicture(user.uid);
+                setUsername(userData.username);
+                setProfilePictureReview(userData.profilePhotoUrl);
             } else {
                 navigate("/signup");
             }

@@ -8,19 +8,23 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { db, storage, auth } from "../firebase";
 
 import { toast, Bounce } from "react-toastify";
 
-function Upload(prop) {
+import { UserDataContext } from "../components/UserDataContext";
+
+function Upload() {
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
 
+    const { userData } = useContext(UserDataContext);
+
     async function incrementUpload() {
         try {
-            const docRef = doc(db, "users", prop.uid);
+            const docRef = doc(db, "users", userData.uid);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
             await updateDoc(docRef, {
@@ -47,7 +51,7 @@ function Upload(prop) {
             });
 
             const timestamp = Date.now();
-            const filename = `${timestamp}-${prop.uid}.${photo.name
+            const filename = `${timestamp}-${userData.uid}.${photo.name
                 .split(".")
                 .pop()}`;
             const photoRef = ref(storage, `photos/${filename}`);
@@ -58,7 +62,7 @@ function Upload(prop) {
             const docCollection = collection(db, "photos");
             await addDoc(docCollection, {
                 photoUrl,
-                uid: prop.uid,
+                uid: userData.uid,
                 createdAt: serverTimestamp(),
                 reputation: 0,
                 rated: [],
@@ -101,7 +105,7 @@ function Upload(prop) {
             setPhotoReview(reader.result);
         };
 
-        const newFilename = `${prop.uid}.${file.name.split(".").pop()}`;
+        const newFilename = `${userData.uid}.${file.name.split(".").pop()}`;
         const newBlob = new Blob([file], {
             type: file.type,
         });
