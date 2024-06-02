@@ -6,6 +6,7 @@ import {
     getDoc,
     updateDoc,
 } from "firebase/firestore";
+
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { useState, useContext } from "react";
@@ -31,70 +32,105 @@ function Upload() {
                 uploaded: data.uploaded + 1,
             });
             console.log("updated");
+            const isNewDay =
+                !data.totalPhotosDaily.timeLastUploaded ||
+                today.getDate() !==
+                    new Date(data.totalPhotosDaily.timeLastUploaded).getDate();
+            if (isNewDay) {
+                data.totalPhotosDaily.uploaded = 0;
+                data.totalPhotosDaily.timeLastUploaded = today.toISOString();
+            }
+            const today = new Date();
+
+            await updateDoc(docRef, {
+                totalPhotosRated: data.totalPhotosRated + 1,
+                totalPhotosDaily: {
+                    uploaded: data.totalPhotosDaily.uploaded + 1,
+                    timeLastUploaded: data.totalPhotosDaily.timeLastUploaded,
+                },
+            });
         } catch (error) {
             console.error("Error updating photo reputation:", error);
         }
     }
 
     async function uploadPhoto() {
-        try {
-            toast.info("Uploading...", {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
+        if (userData.totalPhotosDaily.uploaded > 3) {
+            toast.error(
+                "You have already uploaded 3 photos today. Try again tomorrow.",
+                {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                }
+            );
+            return;
+        } else {
+            try {
+                toast.info("Uploading...", {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                });
 
-            const timestamp = Date.now();
-            const filename = `${timestamp}-${userData.uid}.${photo.name
-                .split(".")
-                .pop()}`;
-            const photoRef = ref(storage, `photos/${filename}`);
-            await uploadBytes(photoRef, photo);
+                const timestamp = Date.now();
+                const filename = `${timestamp}-${userData.uid}.${photo.name
+                    .split(".")
+                    .pop()}`;
+                const photoRef = ref(storage, `photos/${filename}`);
+                await uploadBytes(photoRef, photo);
 
-            const photoUrl = await getDownloadURL(photoRef);
+                const photoUrl = await getDownloadURL(photoRef);
 
-            const docCollection = collection(db, "photos");
-            await addDoc(docCollection, {
-                photoUrl,
-                uid: userData.uid,
-                createdAt: serverTimestamp(),
-                reputation: 0,
-                rated: [],
-                comments: [],
-            });
+                const docCollection = collection(db, "photos");
+                await addDoc(docCollection, {
+                    photoUrl,
+                    uid: userData.uid,
+                    createdAt: serverTimestamp(),
+                    reputation: 0,
+                    rated: [],
+                    comments: [],
+                });
 
-            toast.success("Uploaded!", {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
-        } catch (error) {
-            console.error("Error uploading photo:", error);
-            toast.error("Upload failed!", {
-                position: "bottom-right",
-                autoClose: 0,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
+                toast.success("Uploaded!", {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                });
+            } catch (error) {
+                console.error("Error uploading photo:", error);
+                toast.error("Upload failed!", {
+                    position: "bottom-right",
+                    autoClose: 0,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                });
+            }
+            incrementUpload();
         }
-        incrementUpload();
     }
 
     async function previewImage(e) {

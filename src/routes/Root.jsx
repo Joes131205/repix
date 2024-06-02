@@ -13,7 +13,6 @@ import {
 import { useEffect, useState, useContext } from "react";
 
 import { db, storage, auth } from "../firebase";
-import { onAuthStateChanged } from "firebase/auth";
 
 import Stars from "../components/Stars";
 
@@ -96,8 +95,23 @@ function Root() {
             const docRef = doc(db, "users", userData.uid);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
+            console.log(data);
+            const isNewDay =
+                !data.totalPhotosDaily.timeLastRated ||
+                today.getDate() !==
+                    new Date(data.totalPhotosDaily.timeLastRated).getDate();
+            if (isNewDay) {
+                data.totalPhotosDaily.rated = 0;
+                data.totalPhotosDaily.timeLastRated = today.toISOString();
+            }
+            const today = new Date();
+
             await updateDoc(docRef, {
                 totalPhotosRated: data.totalPhotosRated + 1,
+                totalPhotosDaily: {
+                    rated: data.totalPhotosDaily.rated + 1,
+                    timeLastRated: data.totalPhotosDaily.timeLastRated,
+                },
             });
         } catch (error) {
             console.error(error);
@@ -119,6 +133,23 @@ function Root() {
     }
 
     async function rate() {
+        if (userData.totalPhotosDaily.rated > 3) {
+            toast.error(
+                "You have already rated 3 photos today. Try again tomorrow.",
+                {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                }
+            );
+            return;
+        }
         if (rating) {
             const ratingAdjustments = {
                 1: () => Math.floor(Math.random() * (10 - 6 + 1)) + 6, // -6 to -10
@@ -162,16 +193,13 @@ function Root() {
     useEffect(() => {
         fetchRandomPhoto();
     }, []);
-
     return (
         <div className="flex flex-col items-center justify-center gap-10 mt-10">
             {isLoading ? (
                 <div>Loading...</div>
-            ) : (
-                <Photo url={currentPhoto?.photoUrl ?? ""} />
-            )}{" "}
-            {currentPhoto ? (
+            ) : currentPhoto?.photoUrl ? (
                 <>
+                    <Photo url={currentPhoto?.photoUrl ?? ""} />
                     <Stars setRating={setRating} rating={rating} />
                     <button
                         onClick={rate}
@@ -179,8 +207,8 @@ function Root() {
                         className="bg-yellow-600 hover:bg-yellow-900 text-white font-bold py-2 px-4 rounded transition"
                     >
                         Rate!
-                    </button>{" "}
-                    <Comment photo={currentPhoto} uid={userData.uid} />{" "}
+                    </button>
+                    <Comment photo={currentPhoto} uid={userData.uid} />
                 </>
             ) : (
                 <p>No photos left :(</p>
