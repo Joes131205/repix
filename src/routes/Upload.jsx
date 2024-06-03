@@ -21,13 +21,15 @@ function Upload() {
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
 
-    const { userData } = useContext(UserDataContext);
+    const { userData, updateUserData } = useContext(UserDataContext);
 
     async function incrementUpload() {
         try {
             const docRef = doc(db, "users", userData.uid);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
+            const today = new Date();
+
             await updateDoc(docRef, {
                 uploaded: data.uploaded + 1,
             });
@@ -40,8 +42,6 @@ function Upload() {
                 data.totalPhotosDaily.uploaded = 0;
                 data.totalPhotosDaily.timeLastUploaded = today.toISOString();
             }
-            const today = new Date();
-
             await updateDoc(docRef, {
                 totalPhotosRated: data.totalPhotosRated + 1,
                 totalPhotosDaily: {
@@ -103,7 +103,12 @@ function Upload() {
                     rated: [],
                     comments: [],
                 });
-
+                updateUserData({
+                    totalPhotosDaily: {
+                        uploaded: userData.totalPhotosDaily.uploaded + 1,
+                        timeLastUploaded: new Date().toISOString(),
+                    },
+                });
                 toast.success("Uploaded!", {
                     position: "bottom-right",
                     autoClose: 5000,

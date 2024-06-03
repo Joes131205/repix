@@ -21,8 +21,6 @@ const UserDataProvider = ({ children }) => {
         uid: "",
     });
 
-    const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -30,7 +28,6 @@ const UserDataProvider = ({ children }) => {
 
                 const unsubscribeFirestore = onSnapshot(userDocRef, (doc) => {
                     if (doc.exists) {
-                        console.log(doc.data());
                         setUserData(doc.data());
                     } else {
                         console.error("User document not found in Firestore");
@@ -67,7 +64,6 @@ const UserDataProvider = ({ children }) => {
             value={{
                 userData,
                 updateUserData,
-                loading,
             }}
         >
             {children}

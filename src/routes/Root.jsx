@@ -24,7 +24,7 @@ function Root() {
     const [rating, setRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0);
-    const { userData } = useContext(UserDataContext);
+    const { userData, updateUserData } = useContext(UserDataContext);
 
     async function fetchRandomPhoto() {
         setIsLoading(true);
@@ -92,6 +92,8 @@ function Root() {
 
     async function updateProfile() {
         try {
+            const today = new Date();
+
             const docRef = doc(db, "users", userData.uid);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
@@ -104,7 +106,6 @@ function Root() {
                 data.totalPhotosDaily.rated = 0;
                 data.totalPhotosDaily.timeLastRated = today.toISOString();
             }
-            const today = new Date();
 
             await updateDoc(docRef, {
                 totalPhotosRated: data.totalPhotosRated + 1,
@@ -133,6 +134,7 @@ function Root() {
     }
 
     async function rate() {
+        console.log(userData.totalPhotosDaily.rated);
         if (userData.totalPhotosDaily.rated > 3) {
             toast.error(
                 "You have already rated 3 photos today. Try again tomorrow.",
@@ -163,7 +165,7 @@ function Root() {
                 ratingAdjustments[rating] || ratingAdjustments.default;
             const currRating = adjustmentFunction();
 
-            const updatedRated = [...currentPhoto.rated, uid];
+            const updatedRated = [...currentPhoto.rated, userData.uid];
             const updatedData = {
                 ...currentPhoto,
                 reputation: currentPhoto.reputation + currRating,
