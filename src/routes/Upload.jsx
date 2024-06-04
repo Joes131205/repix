@@ -9,7 +9,7 @@ import {
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import { db, storage, auth } from "../firebase";
 
@@ -18,10 +18,10 @@ import { toast, Bounce } from "react-toastify";
 import { UserDataContext } from "../components/UserDataContext";
 
 function Upload() {
+    const { userData, updateUserData } = useContext(UserDataContext);
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
-
-    const { userData, updateUserData } = useContext(UserDataContext);
+    const [uploaded, setUploaded] = useState(0);
 
     async function incrementUpload() {
         try {
@@ -45,6 +45,7 @@ function Upload() {
             await updateDoc(docRef, {
                 totalPhotosRated: data.totalPhotosRated + 1,
                 totalPhotosDaily: {
+                    ...data.totalPhotosDaily,
                     uploaded: data.totalPhotosDaily.uploaded + 1,
                     timeLastUploaded: data.totalPhotosDaily.timeLastUploaded,
                 },
@@ -55,7 +56,7 @@ function Upload() {
     }
 
     async function uploadPhoto() {
-        if (userData.totalPhotosDaily.uploaded > 3) {
+        if (userData.totalPhotosDaily.uploaded > 2) {
             toast.error(
                 "You have already uploaded 3 photos today. Try again tomorrow.",
                 {
@@ -154,22 +155,38 @@ function Upload() {
         newBlob.name = newFilename;
         setPhoto(newBlob);
     }
-
+    useEffect(() => {
+        console.log(userData);
+        console.log(userData.totalPhotosDaily.uploaded);
+    }, []);
     return (
         <div className=" flex flex-col items-center justify-center gap-10">
-            <h1 className="text-2xl font-bold">Upload Photo</h1>
-            <p>NOTE: We only accepts PNG :)</p>
-            <input type="file" onChange={previewImage} accept="image/png" />
-            <img
-                src={photoReview || "/images/placeholder.png"}
-                className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500"
-            />
-            <button
-                onClick={uploadPhoto}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
-            >
-                Upload!
-            </button>
+            {userData.totalPhotosDaily.uploaded > 2 ? (
+                <p>
+                    Reached maximum amount of photos you can upload for today,
+                    come back tomorrow!
+                </p>
+            ) : (
+                <>
+                    <h1 className="text-2xl font-bold">Upload Photo</h1>
+                    <p>NOTE: We only accepts PNG :)</p>
+                    <input
+                        type="file"
+                        onChange={previewImage}
+                        accept="image/png"
+                    />
+                    <img
+                        src={photoReview || "/images/placeholder.png"}
+                        className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500"
+                    />
+                    <button
+                        onClick={uploadPhoto}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+                    >
+                        Upload!
+                    </button>
+                </>
+            )}
         </div>
     );
 }

@@ -50,35 +50,40 @@ function Profile() {
                     <div className="flex gap-10 flex-wrap items-center justify-center">
                         {photos.length ? (
                             photos.map((photo) => (
-                                <div
-                                    key={`${photo.id}_${photo.createdAt}`}
-                                    className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition select-none"
-                                    style={{
-                                        backgroundImage: `url('${photo.photoUrl}')`,
-                                        backgroundSize: "cover",
-                                        backgroundRepeat: "no-repeat",
-                                    }}
-                                >
-                                    <div className="">
-                                        <p>Reputation: {photo.reputation}</p>
-                                        <p>
-                                            Created At:{" "}
-                                            {new Intl.DateTimeFormat(
-                                                navigator.language,
-                                                {
-                                                    hour: "numeric",
-                                                    minute: "numeric",
-                                                    day: "numeric",
-                                                    month: "numeric",
-                                                    year: "numeric",
-                                                    weekday: "long",
-                                                }
-                                            ).format(
-                                                photo.createdAt.seconds * 1000
-                                            )}
-                                        </p>
+                                <a href={photo.photoUrl} target="_blank">
+                                    <div
+                                        key={`${photo.id}_${photo.createdAt}`}
+                                        className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition select-none"
+                                        style={{
+                                            backgroundImage: `url('${photo.photoUrl}')`,
+                                            backgroundSize: "cover",
+                                            backgroundRepeat: "no-repeat",
+                                        }}
+                                    >
+                                        <div>
+                                            <p>
+                                                Reputation: {photo.reputation}
+                                            </p>
+                                            <p>
+                                                Created At:{" "}
+                                                {new Intl.DateTimeFormat(
+                                                    navigator.language,
+                                                    {
+                                                        hour: "numeric",
+                                                        minute: "numeric",
+                                                        day: "numeric",
+                                                        month: "numeric",
+                                                        year: "numeric",
+                                                        weekday: "long",
+                                                    }
+                                                ).format(
+                                                    photo.createdAt.seconds *
+                                                        1000
+                                                )}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             ))
                         ) : (
                             <p>None yet!</p>

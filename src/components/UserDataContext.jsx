@@ -45,10 +45,8 @@ const UserDataProvider = ({ children }) => {
     }, []);
     const updateUserData = async (newData) => {
         console.log("user data update commencing");
-        const userDocRef = doc(
-            collection(db, "users"),
-            getAuth().currentUser.uid
-        );
+        const usersCollectionRef = collection(db, "users");
+        const userDocRef = doc(usersCollectionRef, user.uid);
         console.log("user data update commencing");
         try {
             await doc(userDocRef).update(newData);

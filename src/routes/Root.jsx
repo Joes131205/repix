@@ -7,12 +7,11 @@ import {
     updateDoc,
     doc,
     getDoc,
-    onSnapshot,
 } from "firebase/firestore";
 
 import { useEffect, useState, useContext } from "react";
 
-import { db, storage, auth } from "../firebase";
+import { db } from "../firebase";
 
 import Stars from "../components/Stars";
 
@@ -24,7 +23,7 @@ function Root() {
     const [rating, setRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0);
-    const { userData, updateUserData } = useContext(UserDataContext);
+    const { userData } = useContext(UserDataContext);
 
     async function fetchRandomPhoto() {
         setIsLoading(true);
@@ -71,7 +70,10 @@ function Root() {
         while (attempts < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
-            if (photo.uid !== userData.uid) {
+            if (
+                photo.uid !== userData.uid &&
+                photo.rated.includes(userData.uid)
+            ) {
                 return photo;
             }
             attempts++;
@@ -110,6 +112,7 @@ function Root() {
             await updateDoc(docRef, {
                 totalPhotosRated: data.totalPhotosRated + 1,
                 totalPhotosDaily: {
+                    ...data.totalPhotosDaily,
                     rated: data.totalPhotosDaily.rated + 1,
                     timeLastRated: data.totalPhotosDaily.timeLastRated,
                 },
@@ -118,7 +121,6 @@ function Root() {
             console.error(error);
         }
     }
-
     async function updateOtherProfile(rating) {
         try {
             const docRef = doc(db, "users", currentPhoto.uid);
@@ -135,7 +137,7 @@ function Root() {
 
     async function rate() {
         console.log(userData.totalPhotosDaily.rated);
-        if (userData.totalPhotosDaily.rated > 3) {
+        if (userData.totalPhotosDaily.rated > 2) {
             toast.error(
                 "You have already rated 3 photos today. Try again tomorrow.",
                 {
@@ -194,10 +196,16 @@ function Root() {
 
     useEffect(() => {
         fetchRandomPhoto();
+        console.log(userData.totalPhotosDaily.rated);
     }, []);
     return (
         <div className="flex flex-col items-center justify-center gap-10 mt-10">
-            {isLoading ? (
+            {userData.totalPhotosDaily.rated > 2 ? (
+                <p>
+                    Reached a maximum amount of photos rated for today (3), come
+                    back tomorrow!
+                </p>
+            ) : isLoading ? (
                 <div>Loading...</div>
             ) : currentPhoto?.photoUrl ? (
                 <>
