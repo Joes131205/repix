@@ -64,6 +64,7 @@ function SignIn(prop) {
                     reputation: 0,
                     bestRatedPhoto: "",
                     totalPhotosRated: 0,
+                    ratedPhotos: [],
                     totalPhotosDaily: {
                         rated: 0,
                         uploaded: 0,

@@ -42,7 +42,6 @@ function SignUp(prop) {
                 username,
                 uploaded: 0,
                 reputation: 0,
-                bestRatedPhoto: "",
                 totalPhotosRated: 0,
                 totalPhotosDaily: {
                     rated: 0,
@@ -50,10 +49,10 @@ function SignUp(prop) {
                     timeLastRated: "",
                     timeLastUploaded: "",
                 },
+                ratedPhotos: [],
                 profilePhotoUrl,
                 uid,
             });
-            console.log("user created");
         } catch (err) {
             console.error("Error adding document: ", err);
         }
@@ -115,6 +114,7 @@ function SignUp(prop) {
                         transition: Bounce,
                     });
                     prop.onSignupSuccess();
+                    navigate("/");
                 })
                 .catch((error) => {
                     const errorCode = error.code;

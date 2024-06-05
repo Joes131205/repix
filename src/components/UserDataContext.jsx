@@ -10,7 +10,6 @@ const UserDataProvider = ({ children }) => {
         username: "",
         uploaded: 0,
         reputation: 0,
-        bestRatedPhoto: "",
         totalPhotosRated: 0,
         totalPhotosDaily: {
             rated: 0,
@@ -18,6 +17,8 @@ const UserDataProvider = ({ children }) => {
             timeLastRated: "",
             timeLastUploaded: "",
         },
+        ratedPhotos: [],
+        profilePhotoUrl: "",
         uid: "",
     });
 
@@ -46,7 +47,7 @@ const UserDataProvider = ({ children }) => {
     const updateUserData = async (newData) => {
         console.log("user data update commencing");
         const usersCollectionRef = collection(db, "users");
-        const userDocRef = doc(usersCollectionRef, user.uid);
+        const userDocRef = doc(usersCollectionRef, userData.uid);
         console.log("user data update commencing");
         try {
             await doc(userDocRef).update(newData);

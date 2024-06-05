@@ -55,7 +55,8 @@ function Root() {
             if (photo) {
                 setCurrentPhoto(photo);
             } else {
-                console.log("No more photos to fetch.");
+                setCurrentPhoto({});
+                return;
             }
         } catch (error) {
             console.error("Error fetching photos:", error);
@@ -70,12 +71,18 @@ function Root() {
         while (attempts < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
+            if (!photo?.photoUrl) continue;
+            console.log(photo);
+            console.log(userData);
+            console.log(photo.rated.includes(userData.uid));
             if (
                 photo.uid !== userData.uid &&
-                photo.rated.includes(userData.uid)
+                !photo.rated.includes(userData.uid) &&
+                !userData.ratedPhotos.find((id) => id === photo.id)
             ) {
                 return photo;
             }
+            console.log("dupe or same rated");
             attempts++;
         }
         return null;
@@ -116,6 +123,7 @@ function Root() {
                     rated: data.totalPhotosDaily.rated + 1,
                     timeLastRated: data.totalPhotosDaily.timeLastRated,
                 },
+                ratedPhotos: [...(data.ratedPhotos || []), currentPhoto.id],
             });
         } catch (error) {
             console.error(error);
@@ -136,7 +144,6 @@ function Root() {
     }
 
     async function rate() {
-        console.log(userData.totalPhotosDaily.rated);
         if (userData.totalPhotosDaily.rated > 2) {
             toast.error(
                 "You have already rated 3 photos today. Try again tomorrow.",
@@ -196,7 +203,7 @@ function Root() {
 
     useEffect(() => {
         fetchRandomPhoto();
-        console.log(userData.totalPhotosDaily.rated);
+        console.log(currentPhoto);
     }, []);
     return (
         <div className="flex flex-col items-center justify-center gap-10 mt-10">

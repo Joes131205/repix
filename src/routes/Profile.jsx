@@ -44,9 +44,7 @@ function Profile() {
                 <p>Total photos rated: {userData.totalPhotosRated}</p>
                 <p>Photos uploaded: {userData.uploaded}</p>
                 <div className="flex flex-col gap-10">
-                    <h2 className="text-2xl font-bold">
-                        Your Photos (From most rated to least)
-                    </h2>
+                    <h2 className="text-2xl font-bold">Your Photos</h2>
                     <div className="flex gap-10 flex-wrap items-center justify-center">
                         {photos.length ? (
                             photos.map((photo) => (

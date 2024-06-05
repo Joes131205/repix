@@ -38,6 +38,7 @@ function App() {
 
     const location = useLocation();
     const navigate = useNavigate();
+
     useEffect(() => {
         const pathname = location.pathname;
         const title = "Repix | " + (routeTitles[pathname] || "Error");
@@ -80,8 +81,6 @@ function App() {
             <Route path="*" element={<ErrorPage />} />
         </Routes>
     );
-
-    console.log("Children passed to userDataProvider:", routes);
 
     return (
         <UserDataProvider>
