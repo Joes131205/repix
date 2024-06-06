@@ -123,7 +123,7 @@ function Upload() {
                 });
             } catch (error) {
                 console.error("Error uploading photo:", error);
-                toast.error("Upload failed!", {
+                toast.error("Upload failed! Try again!", {
                     position: "bottom-right",
                     autoClose: 0,
                     hideProgressBar: false,

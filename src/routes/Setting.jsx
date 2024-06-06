@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { doc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useEffect, useState, useContext } from "react";
 
 import { db, storage, auth } from "../firebase";
@@ -16,6 +16,7 @@ function Setting() {
     const [username, setUsername] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
     const [profilePictureReview, setProfilePictureReview] = useState("");
+    const [error, setError] = useState("");
     const { userData } = useContext(UserDataContext);
 
     const navigate = useNavigate();
@@ -37,30 +38,35 @@ function Setting() {
                 theme: "colored",
                 transition: Bounce,
             });
-            window.location.reload();
         } catch (error) {
-            console.log(error);
+            setError(error);
         }
     }
 
     async function changeProfilePicture(image) {
-        const storageRef = ref(storage, `profile-pictures/${image.name}`);
-        await uploadBytes(storageRef, image);
-        toast.success("Changed Profile Picture!", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-        });
-        window.location.reload();
-        const url = await getDownloadURL(storageRef);
-        const userRef = doc(db, "users", userData.uid);
-        await updateDoc(userRef);
+        try {
+            const storageRef = ref(storage, `profile-pictures/${image.name}`);
+            await uploadBytes(storageRef, image);
+            toast.success("Changed Profile Picture!", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
+            const userRef = doc(db, "users", userData.uid);
+            const profilePictureUrl = await getDownloadURL(storageRef);
+
+            await updateDoc(userRef, {
+                profilePhotoUrl: profilePictureUrl,
+            });
+        } catch (error) {
+            setError(error);
+        }
     }
 
     async function changeProfilePictureReview(e) {
@@ -144,6 +150,7 @@ function Setting() {
                     Change Profile Picture
                 </button>
             </div>
+            <p className="text-red-800">{error}</p>
             <Link
                 to="/"
                 className="bg-red-700 px-4 py-2 rounded-lg font-bold hover:bg-red-900 transition"

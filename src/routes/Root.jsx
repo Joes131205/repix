@@ -23,6 +23,7 @@ function Root() {
     const [rating, setRating] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [attempts, setAttempts] = useState(0);
+    const [error, setError] = useState("");
     const { userData } = useContext(UserDataContext);
 
     async function fetchRandomPhoto() {
@@ -44,7 +45,7 @@ function Root() {
                 if (doc.exists) {
                     filteredData.push({ ...doc.data(), id: doc.id });
                 } else {
-                    console.error("Document not found:", doc.id);
+                    setError("Error occurred while fetching photo, try again!");
                 }
             }
 
@@ -59,7 +60,7 @@ function Root() {
                 return;
             }
         } catch (error) {
-            console.error("Error fetching photos:", error);
+            setError("Error occurred while fetching photo, try again!");
         } finally {
             setIsLoading(false);
             setAttempts(attempts + 1);
@@ -82,7 +83,6 @@ function Root() {
             ) {
                 return photo;
             }
-            console.log("dupe or same rated");
             attempts++;
         }
         return null;
@@ -92,9 +92,11 @@ function Root() {
         const ref = doc(db, "photos", currentPhoto.id);
         try {
             await updateDoc(ref, data);
-            console.log("Photo reputation updated successfully!");
         } catch (error) {
-            console.error("Error updating photo reputation:", error);
+            setError(
+                "Error occurred while updating photo photo, try again!",
+                doc.id
+            );
         }
         setRating(0);
     }
@@ -106,7 +108,7 @@ function Root() {
             const docRef = doc(db, "users", userData.uid);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
-            console.log(data);
+
             const isNewDay =
                 !data.totalPhotosDaily.timeLastRated ||
                 today.getDate() !==
@@ -126,7 +128,7 @@ function Root() {
                 ratedPhotos: [...(data.ratedPhotos || []), currentPhoto.id],
             });
         } catch (error) {
-            console.error(error);
+            setError(error);
         }
     }
     async function updateOtherProfile(rating) {
@@ -139,7 +141,7 @@ function Root() {
                 reputation: data.reputation + rating,
             });
         } catch (error) {
-            console.error(error);
+            setError(error);
         }
     }
 
@@ -162,6 +164,7 @@ function Root() {
             return;
         }
         if (rating) {
+            setError("");
             const ratingAdjustments = {
                 1: () => Math.floor(Math.random() * (10 - 6 + 1)) + 6, // -6 to -10
                 2: () => Math.floor(Math.random() * (5 - 1 + 1)) + 1, // -1 to -5
@@ -180,7 +183,6 @@ function Root() {
                 reputation: currentPhoto.reputation + currRating,
                 rated: updatedRated,
             };
-            console.log(currRating);
             await updatePhoto(updatedData);
             await updateProfile();
             await updateOtherProfile(currRating);
@@ -203,8 +205,8 @@ function Root() {
 
     useEffect(() => {
         fetchRandomPhoto();
-        console.log(currentPhoto);
     }, []);
+
     return (
         <div className="flex flex-col items-center justify-center gap-10 mt-10">
             {userData.totalPhotosDaily.rated > 2 ? (
@@ -226,6 +228,7 @@ function Root() {
                         Rate!
                     </button>
                     <Comment photo={currentPhoto} uid={userData.uid} />
+                    <p className="text-red-800">{error}</p>
                 </>
             ) : (
                 <p>No photos left :(</p>

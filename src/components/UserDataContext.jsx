@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 
@@ -46,12 +46,10 @@ const UserDataProvider = ({ children }) => {
     }, []);
     const updateUserData = async (newData) => {
         console.log("user data update commencing");
-        const usersCollectionRef = collection(db, "users");
-        const userDocRef = doc(usersCollectionRef, userData.uid);
-        console.log("user data update commencing");
         try {
-            await doc(userDocRef).update(newData);
-            setUserData({ ...userData, ...newData, uid: currentUser.uid });
+            const userDocRef = doc(db, "users", userData.uid); // Ensure "users" is the correct collection name
+            await updateDoc(userDocRef, newData);
+            setUserData({ ...userData, ...newData });
             console.log(userData);
         } catch (error) {
             console.error("Error updating user data in Firestore:", error);
