@@ -55,6 +55,7 @@ function SignUp(prop) {
             });
         } catch (err) {
             console.error("Error adding document: ", err);
+            setError("Failed to create user profile. Please try again.");
         }
     }
 
@@ -82,58 +83,96 @@ function SignUp(prop) {
             return downloadURL;
         } catch (error) {
             console.error("Error storing default profile picture:", error);
+            setError(
+                "Failed to upload default profile picture. Please try again."
+            );
             return null;
         }
     }
 
     async function signUpUser(e) {
+        setError("");
+
         e.preventDefault();
         const { username, email, password, confirmPassword } = data;
         if (password === confirmPassword) {
-            await createUserWithEmailAndPassword(auth, email, password)
-                .then(async (userCredential) => {
-                    const user = userCredential.user;
-                    const profilePhotoUrl = await storeDefaultProfilePicture(
-                        user.uid
-                    );
-                    await storeUsernameAndData(
-                        user.uid,
-                        username,
-                        profilePhotoUrl
-                    );
-                    await sendEmailVerification();
-                    toast.success("Signed Up! Email verification sent!", {
-                        position: "bottom-right",
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                        transition: Bounce,
+            try {
+                await createUserWithEmailAndPassword(auth, email, password)
+                    .then(async (userCredential) => {
+                        const user = userCredential.user;
+                        const profilePhotoUrl =
+                            await storeDefaultProfilePicture(user.uid);
+                        await storeUsernameAndData(
+                            user.uid,
+                            username,
+                            profilePhotoUrl
+                        );
+                        await sendEmailVerification();
+                        toast.success("Signed Up! Email verification sent!", {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                            transition: Bounce,
+                        });
+                        prop.onSignupSuccess();
+                        navigate("/");
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        switch (errorCode) {
+                            case "auth/email-already-in-use":
+                                setError(
+                                    "Email already in use. Please try a different email."
+                                );
+                                break;
+                            case "auth/invalid-email":
+                                setError(
+                                    "Invalid email address. Please try again."
+                                );
+                                break;
+                            case "auth/weak-password":
+                                setError(
+                                    "Password is too weak. Please try a stronger password."
+                                );
+                                break;
+                            default:
+                                setError(
+                                    "Failed to sign up. Please try again."
+                                );
+                        }
                     });
-                    prop.onSignupSuccess();
-                    navigate("/");
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const words = errorCode.split("/")[1].replaceAll("-", " ");
-
-                    const formattedErrorMessage =
-                        words[0].toUpperCase() + words.slice(1);
-
-                    setError(formattedErrorMessage);
-                });
+            } catch (error) {
+                setError("Failed to sign up. Please try again.");
+            }
+        } else {
+            setError("Passwords do not match. Please try again.");
         }
     }
+
     async function signUpUserWithGoogle() {
+        setError("");
+
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
 
+            const docRef = doc(db, "users", user.uid);
+            const existingData = await getDoc(docRef);
+            const existingUsername = existingData.data()?.username;
+            const existingProfilePhotoUrl =
+                existingData.data()?.profilePhotoUrl;
+
             const profilePhotoUrl = await storeDefaultProfilePicture(user.uid);
-            await storeUsernameAndData(user.uid, "", profilePhotoUrl);
+            await storeUsernameAndData(
+                user.uid,
+                existingUsername || "",
+                profilePhotoUrl || existingProfilePhotoUrl
+            );
             toast.success("Signed Up! Email verification sent!", {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -145,15 +184,40 @@ function SignUp(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            prop.onSignupSuccess();
+            window.reload();
         } catch (error) {
             const errorCode = error.code;
-            const words = errorCode.split("/")[1].replaceAll("-", " ");
-
-            const formattedErrorMessage =
-                words[0].toUpperCase() + words.slice(1);
-
-            setError(formattedErrorMessage);
+            switch (errorCode) {
+                case "auth/account-exists-with-different-credential":
+                    setError(
+                        "Account exists with different credential. Please try again."
+                    );
+                    break;
+                case "auth/auth-domain-config-required":
+                    setError(
+                        "Authentication domain config is required. Please try again."
+                    );
+                    break;
+                case "auth/cancelled-popup-request":
+                    setError("Popup request was cancelled. Please try again.");
+                    break;
+                case "auth/operation-not-allowed":
+                    setError("Operation is not allowed. Please try again.");
+                    break;
+                case "auth/popup-blocked":
+                    setError("Popup was blocked. Please try again.");
+                    break;
+                case "auth/popup-closed-by-user":
+                    setError("Popup was closed by user. Please try again.");
+                    break;
+                case "auth/unauthorized-domain":
+                    setError("Unauthorized domain. Please try again.");
+                    break;
+                default:
+                    setError(
+                        "Failed to sign up with Google. Please try again."
+                    );
+            }
         }
     }
 
@@ -175,7 +239,7 @@ function SignUp(prop) {
                         type="text"
                         name="username"
                         id="username"
-                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Username..."
                         value={data.username}
                         onChange={(e) =>
@@ -189,7 +253,7 @@ function SignUp(prop) {
                         type="text"
                         name="email"
                         id="email"
-                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Email..."
                         value={data.email}
                         onChange={(e) =>
@@ -203,7 +267,7 @@ function SignUp(prop) {
                         type="password"
                         name="password"
                         id="password"
-                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Password..."
                         value={data.password}
                         onChange={(e) =>
@@ -219,7 +283,7 @@ function SignUp(prop) {
                         type="password"
                         name="confirmPassword"
                         id="confirmPassword"
-                        className="text-white bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Confirm your password..."
                         value={data.confirmPassword}
                         onChange={(e) =>

@@ -34,6 +34,8 @@ function SignIn(prop) {
     const provider = new GoogleAuthProvider();
 
     async function signInUserWithGoogle() {
+        setError("");
+
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
@@ -41,9 +43,7 @@ function SignIn(prop) {
 
             const docRef = doc(db, "users", uid);
             const docSnap = await getDoc(docRef);
-            console.log(docSnap.exists());
             if (docSnap.exists()) {
-                console.log("User already exists, logging in...");
                 toast.success("Signed In!", {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -55,9 +55,8 @@ function SignIn(prop) {
                     theme: "colored",
                     transition: Bounce,
                 });
-                prop.onSignupSuccess();
+                prop.onSigninSuccess();
             } else {
-                console.log("User doesn't exist, creating new user...");
                 await setDoc(docRef, {
                     username: `user_${uid.slice(1, 5)}`,
                     uploaded: 0,
@@ -91,12 +90,16 @@ function SignIn(prop) {
                     );
                 }
             }
+            prop.onSigninSuccess();
+            window.reload();
         } catch (error) {
-            console.log(error);
+            setError("Error signing in with Google. Please try again.");
         }
     }
 
-    async function signInUser() {
+    async function signInUser(e) {
+        e.preventDefault();
+        setError("");
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
             toast.success("Signed In!", {
@@ -110,15 +113,29 @@ function SignIn(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            prop.onSignupSuccess();
+            prop.onSigninSuccess();
+
+            window.reload();
         } catch (error) {
             const errorCode = error.code;
-            const words = errorCode.split("/")[1].replaceAll("-", " ");
+            let errorMessage = "";
 
-            const formattedErrorMessage =
-                words[0].toUpperCase() + words.slice(1);
+            switch (errorCode) {
+                case "auth/invalid-email":
+                    errorMessage = "Invalid email address. Please try again.";
+                    break;
+                case "auth/user-not-found":
+                    errorMessage =
+                        "User not found. Please sign up or try again.";
+                    break;
+                case "auth/wrong-password":
+                    errorMessage = "Incorrect password. Please try again.";
+                    break;
+                default:
+                    errorMessage = "An error occurred. Please try again.";
+            }
 
-            setError(formattedErrorMessage);
+            setError(errorMessage);
         }
     }
 
@@ -155,6 +172,9 @@ function SignIn(prop) {
                         id="password"
                         className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         value={data.password}
+                        onChange={(e) =>
+                            setData({ ...data, password: e.target.value })
+                        }
                     />
                 </div>
                 <input
