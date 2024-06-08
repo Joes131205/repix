@@ -73,9 +73,7 @@ function Root() {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
             if (!photo?.photoUrl) continue;
-            console.log(photo);
-            console.log(userData);
-            console.log(photo.rated.includes(userData.uid));
+
             if (
                 photo.uid !== userData.uid &&
                 !photo.rated.includes(userData.uid) &&

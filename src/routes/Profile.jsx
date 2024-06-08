@@ -5,18 +5,15 @@ import { collection, getDocs } from "firebase/firestore";
 
 function Profile() {
     const { userData } = useContext(UserDataContext);
-    console.log(userData);
     const [photos, setPhotos] = useState([]);
 
     async function getAllPhotos() {
         const photosCollection = collection(db, "photos");
         const querySnapshot = await getDocs(photosCollection);
-        console.log(querySnapshot);
         if (querySnapshot.length === 0) return;
         const photoData = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            console.log(data.uid === userData.uid);
             if (data.uid === userData.uid) {
                 setPhotos((prev) => [...prev, data]);
             }

@@ -7,18 +7,13 @@ import { UserDataContext } from "../components/UserDataContext";
 
 function NavBar({ isLoggedIn, onSignoutSuccess }) {
     const { userData } = useContext(UserDataContext);
-    console.log(userData);
     const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState(false);
     const handleSignOut = () => {
-        signOut(auth)
-            .then(() => {
-                navigate("/signin");
-                onSignoutSuccess();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        signOut(auth).then(() => {
+            navigate("/signin");
+            onSignoutSuccess();
+        });
     };
 
     useEffect(() => {

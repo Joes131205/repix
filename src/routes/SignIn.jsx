@@ -7,6 +7,7 @@ import {
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    sendPasswordResetEmail,
 } from "firebase/auth";
 
 import { setDoc, doc, getDoc } from "firebase/firestore";
@@ -84,7 +85,7 @@ function SignIn(prop) {
                     const metadata = { contentType: "image/png" };
                     await uploadBytes(storageRef, blob, metadata);
                 } else {
-                    console.error(
+                    throw new Error(
                         "Failed to fetch default profile picture:",
                         response.statusText
                     );
@@ -139,6 +140,26 @@ function SignIn(prop) {
         }
     }
 
+    async function sendResetPassword() {
+        setError("");
+        try {
+            await sendPasswordResetEmail(auth, data.email);
+            toast.success("Password reset email sent!", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
+        } catch (error) {
+            setError("An error occurred. Please try again.");
+        }
+    }
+
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -180,9 +201,15 @@ function SignIn(prop) {
                 <input
                     type="submit"
                     value="Sign In!"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
                 />
             </form>
+            <p
+                className="underline text-blue-400 cursor-pointer"
+                onClick={sendResetPassword}
+            >
+                Forget password?
+            </p>
             <p>{error}</p>
             <button
                 onClick={signInUserWithGoogle}

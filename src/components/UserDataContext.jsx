@@ -30,13 +30,9 @@ const UserDataProvider = ({ children }) => {
                 const unsubscribeFirestore = onSnapshot(userDocRef, (doc) => {
                     if (doc.exists) {
                         setUserData(doc.data());
-                    } else {
-                        console.error("User document not found in Firestore");
                     }
                 });
                 return () => unsubscribeFirestore();
-            } else {
-                console.log("No user signed in.");
             }
         });
 
@@ -45,12 +41,10 @@ const UserDataProvider = ({ children }) => {
         };
     }, []);
     const updateUserData = async (newData) => {
-        console.log("user data update commencing");
         try {
             const userDocRef = doc(db, "users", userData.uid); // Ensure "users" is the correct collection name
             await updateDoc(userDocRef, newData);
             setUserData({ ...userData, ...newData });
-            console.log(userData);
         } catch (error) {
             console.error("Error updating user data in Firestore:", error);
         }

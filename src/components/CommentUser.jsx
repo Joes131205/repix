@@ -25,7 +25,6 @@ function CommentUser(prop) {
     }
 
     useEffect(() => {
-        console.log(prop.uid);
         fetchData(prop.uid);
     }, []);
 

@@ -32,7 +32,6 @@ function SignUp(prop) {
     const [error, setError] = useState("");
 
     async function storeUsernameAndData(uid, username, profilePhotoUrl) {
-        console.log("creating username and data");
         if (!username) {
             username = `user_${uid.slice(1, 5)}`;
         }
@@ -54,7 +53,6 @@ function SignUp(prop) {
                 uid,
             });
         } catch (err) {
-            console.error("Error adding document: ", err);
             setError("Failed to create user profile. Please try again.");
         }
     }
@@ -82,7 +80,6 @@ function SignUp(prop) {
             const downloadURL = await getDownloadURL(storageRef);
             return downloadURL;
         } catch (error) {
-            console.error("Error storing default profile picture:", error);
             setError(
                 "Failed to upload default profile picture. Please try again."
             );
@@ -107,7 +104,7 @@ function SignUp(prop) {
                             username,
                             profilePhotoUrl
                         );
-                        await sendEmailVerification();
+                        await sendEmailVerification(user);
                         toast.success("Signed Up! Email verification sent!", {
                             position: "bottom-right",
                             autoClose: 5000,
@@ -221,14 +218,6 @@ function SignUp(prop) {
         }
     }
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navigate("/");
-            }
-        });
-    });
-
     return (
         <div className="flex flex-col h-screen items-center justify-center gap-5">
             <h1 className="font-bold text-2xl">Sign Up</h1>
@@ -239,7 +228,7 @@ function SignUp(prop) {
                         type="text"
                         name="username"
                         id="username"
-                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Username..."
                         value={data.username}
                         onChange={(e) =>
@@ -253,7 +242,7 @@ function SignUp(prop) {
                         type="text"
                         name="email"
                         id="email"
-                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Email..."
                         value={data.email}
                         onChange={(e) =>
@@ -267,7 +256,7 @@ function SignUp(prop) {
                         type="password"
                         name="password"
                         id="password"
-                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Password..."
                         value={data.password}
                         onChange={(e) =>
@@ -283,7 +272,7 @@ function SignUp(prop) {
                         type="password"
                         name="confirmPassword"
                         id="confirmPassword"
-                        className=" bg-gray-50 border border-gray-500 rounded px-4 py-2"
+                        className="text-black bg-gray-50 border border-gray-500 rounded px-4 py-2"
                         placeholder="Confirm your password..."
                         value={data.confirmPassword}
                         onChange={(e) =>

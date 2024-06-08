@@ -2,7 +2,6 @@ import { useLocation, Link } from "react-router-dom";
 
 function ErrorPage() {
     let location = useLocation();
-    console.error(location);
     return (
         <div className="flex flex-col items-center text-center justify-center box-border gap-10">
             <h1 className="text-2xl font-bold">404</h1>

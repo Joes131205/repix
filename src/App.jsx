@@ -54,14 +54,13 @@ function App() {
     const handleSignout = () => {
         setIsLoggedIn(false);
     };
-
     useEffect(() => {
-        if (userData.uid) {
+        if (userData && userData.uid) {
             handleLogIn();
         } else {
             navigate("/signup");
         }
-    }, [userData.uid]);
+    }, [userData && userData.uid]); // Also add the null check here
 
     const routes = (
         <Routes>

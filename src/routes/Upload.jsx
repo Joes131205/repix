@@ -21,7 +21,6 @@ function Upload() {
     const { userData, updateUserData } = useContext(UserDataContext);
     const [photoReview, setPhotoReview] = useState("");
     const [photo, setPhoto] = useState("");
-    const [uploaded, setUploaded] = useState(0);
 
     async function incrementUpload() {
         try {
@@ -33,7 +32,6 @@ function Upload() {
             await updateDoc(docRef, {
                 uploaded: data.uploaded + 1,
             });
-            console.log("updated");
             const isNewDay =
                 !data.totalPhotosDaily.timeLastUploaded ||
                 today.getDate() !==
@@ -51,7 +49,17 @@ function Upload() {
                 },
             });
         } catch (error) {
-            console.error("Error updating photo reputation:", error);
+            toast.error("Error occurred, try again! ", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
         }
     }
 
@@ -122,7 +130,6 @@ function Upload() {
                     transition: Bounce,
                 });
             } catch (error) {
-                console.error("Error uploading photo:", error);
                 toast.error("Upload failed! Try again!", {
                     position: "bottom-right",
                     autoClose: 0,
@@ -155,10 +162,6 @@ function Upload() {
         newBlob.name = newFilename;
         setPhoto(newBlob);
     }
-    useEffect(() => {
-        console.log(userData);
-        console.log(userData.totalPhotosDaily.uploaded);
-    }, []);
     return (
         <div className=" flex flex-col items-center justify-center gap-10">
             {userData.totalPhotosDaily.uploaded > 2 ? (
