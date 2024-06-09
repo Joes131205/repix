@@ -27,7 +27,7 @@ function Profile() {
     return (
         <div className=" flex flex-col items-center justify-center text-center gap-10 mb-14">
             <h1 className="font-bold text-2xl">Your Profile</h1>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 items-center">
                 <img
                     src={userData.profilePhotoUrl || "/images/placeholder.png"}
                     alt="Profile Picture"

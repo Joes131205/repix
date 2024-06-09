@@ -112,6 +112,18 @@ function NavBar({ isLoggedIn, onSignoutSuccess }) {
             ) : (
                 <div className="flex gap-10 items-center justify-around">
                     <h1 className="font-bold">Repix</h1>
+                    <Link
+                        to="/signin"
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Sign In
+                    </Link>
+                    <Link
+                        to="/signup"
+                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                    >
+                        Sign Up
+                    </Link>{" "}
                     <button
                         onClick={toggleDarkMode}
                         className="dark:text-white text-black hover:underline decoration-2 flex items-center justify-center gap-5 dark:decoration-white decoration-black"

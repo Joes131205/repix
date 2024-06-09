@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
+import { auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import Root from "./routes/Root";
 import SignIn from "./routes/SignIn";
 import SignUp from "./routes/SignUp";
@@ -16,6 +18,7 @@ import Upload from "./routes/Upload";
 import Leaderboard from "./routes/Leaderboard";
 import ErrorPage from "./routes/ErrorPage";
 import Profile from "./routes/Profile";
+import PasswordReset from "./routes/PasswordReset";
 
 import NavBar from "./components/NavBar";
 import {
@@ -34,6 +37,7 @@ function App() {
         "/leaderboard": "Leaderboard",
         "/profile": "Profile",
         "/setting": "Setting",
+        "/resetpassword": "Reset Password",
     };
 
     const location = useLocation();
@@ -60,7 +64,18 @@ function App() {
         } else {
             navigate("/signup");
         }
-    }, [userData && userData.uid]); // Also add the null check here
+    }, [userData && userData.uid]);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                handleLogIn();
+                navigate("/");
+            } else {
+                navigate("/signup");
+            }
+        });
+    }, []);
 
     const routes = (
         <Routes>
@@ -77,6 +92,7 @@ function App() {
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/setting" element={<Setting />} />
+            <Route path="/resetpassword" element={<PasswordReset />} />
             <Route path="*" element={<ErrorPage />} />
         </Routes>
     );

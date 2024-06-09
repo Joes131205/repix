@@ -91,8 +91,9 @@ function SignIn(prop) {
                     );
                 }
             }
-            prop.onSigninSuccess();
-            window.reload();
+            prop.onSignupSuccess();
+            navigate("/");
+            window.location.reload();
         } catch (error) {
             setError("Error signing in with Google. Please try again.");
         }
@@ -114,9 +115,9 @@ function SignIn(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            prop.onSigninSuccess();
-
-            window.reload();
+            prop.onSignupSuccess();
+            navigate("/");
+            window.location.reload();
         } catch (error) {
             const errorCode = error.code;
             let errorMessage = "";
@@ -139,34 +140,6 @@ function SignIn(prop) {
             setError(errorMessage);
         }
     }
-
-    async function sendResetPassword() {
-        setError("");
-        try {
-            await sendPasswordResetEmail(auth, data.email);
-            toast.success("Password reset email sent!", {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Bounce,
-            });
-        } catch (error) {
-            setError("An error occurred. Please try again.");
-        }
-    }
-
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navigate("/");
-            }
-        });
-    });
 
     return (
         <div className="flex flex-col h-screen items-center justify-center gap-10">
@@ -204,13 +177,13 @@ function SignIn(prop) {
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
                 />
             </form>
-            <p
+            <Link
                 className="underline text-blue-400 cursor-pointer"
-                onClick={sendResetPassword}
+                to="/resetpassword"
             >
                 Forget password?
-            </p>
-            <p>{error}</p>
+            </Link>
+            <p className="text-red-600">{error}</p>
             <button
                 onClick={signInUserWithGoogle}
                 className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"

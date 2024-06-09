@@ -1,15 +1,14 @@
 import { db, storage, auth } from "../firebase";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
-    onAuthStateChanged,
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
     sendEmailVerification,
 } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { toast, Bounce } from "react-toastify";
@@ -118,6 +117,7 @@ function SignUp(prop) {
                         });
                         prop.onSignupSuccess();
                         navigate("/");
+                        window.location.reload();
                     })
                     .catch((error) => {
                         const errorCode = error.code;
@@ -181,8 +181,11 @@ function SignUp(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            window.reload();
+            prop.onSignupSuccess();
+            navigate("/");
+            window.location.reload();
         } catch (error) {
+            console.log(error);
             const errorCode = error.code;
             switch (errorCode) {
                 case "auth/account-exists-with-different-credential":
@@ -289,7 +292,7 @@ function SignUp(prop) {
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
                 />
             </form>
-            <p>{error}</p>
+            <p className="text-red-600">{error}</p>
             <button
                 onClick={signUpUserWithGoogle}
                 className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
