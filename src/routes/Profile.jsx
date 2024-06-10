@@ -44,8 +44,12 @@ function Profile() {
                     <h2 className="text-2xl font-bold">Your Photos</h2>
                     <div className="flex gap-10 flex-wrap items-center justify-center">
                         {photos.length ? (
-                            photos.map((photo) => (
-                                <a href={photo.photoUrl} target="_blank">
+                            photos.map((photo, i) => (
+                                <a
+                                    href={photo.photoUrl}
+                                    target="_blank"
+                                    key={i}
+                                >
                                     <div
                                         key={`${photo.id}_${photo.createdAt}`}
                                         className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500 flex flex-col items-center justify-center text-transparent hover:text-white bg-blend-darken hover:bg-[#000000de] transition select-none"

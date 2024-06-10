@@ -1,7 +1,7 @@
 import { getDocs, query, orderBy, collection } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 
-import { db, storage, auth } from "../firebase";
+import { db, storage } from "../firebase";
 import { useEffect, useState } from "react";
 
 function Leaderboard() {
@@ -42,11 +42,22 @@ function Leaderboard() {
                 <tbody>
                     {users.map((user, i) => {
                         return (
-                            <tr key={i}>
+                            <tr
+                                key={i}
+                                className={`${
+                                    i === 0
+                                        ? "dark:bg-yellow-800 bg-yellow-300"
+                                        : i === 1
+                                        ? "dark:bg-slate-600 bg-slate-400"
+                                        : i === 2
+                                        ? "dark:bg-orange-800 bg-yellow-600"
+                                        : ""
+                                } `}
+                            >
                                 <td className="px-4 py-2 text-center">
                                     {i + 1}
                                 </td>
-                                <td className="px-4 py-2 flex items-center justify-center gap-4">
+                                <td className="px-4 py-2 flex items-center justify-center gap-4 ">
                                     <img
                                         src={user.profilePicture}
                                         className="w-10 h-10 rounded-full"

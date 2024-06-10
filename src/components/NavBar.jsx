@@ -35,79 +35,85 @@ function NavBar({ isLoggedIn, onSignoutSuccess }) {
     }
 
     return (
-        <div
-            className={`flex items-center justify-between sticky bg-gray-200 h-12 px-5 mb-2 dark:bg-[#333333]`}
-        >
+        <div className="flex items-center  sticky bg-gray-200 h-12 px-5 mb-2 dark:bg-[#333333] w-screen">
             {isLoggedIn ? (
-                <div className="flex gap-12 items-center justify-around">
-                    <div>
+                <div className="flex justify-between gap-20 w-screen ml-5 mr-5">
+                    <div className="flex gap-12 items-center justify-center">
+                        <div>
+                            <Link
+                                to="/profile"
+                                className="flex gap-5 items-center dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                            >
+                                <img
+                                    src={
+                                        userData.profilePhotoUrl ||
+                                        "/images/placeholder.png"
+                                    }
+                                    alt="Profile Picture"
+                                    className="w-10 h-10 rounded-full"
+                                />
+                                <h1 className="font-bold">
+                                    {userData.username}
+                                </h1>
+                            </Link>
+                        </div>
                         <Link
-                            to="/profile"
-                            className="flex gap-5 items-center dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                            to="/"
+                            className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        >
+                            Home
+                        </Link>
+                        <Link
+                            to="/upload"
+                            className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        >
+                            Upload
+                        </Link>
+                        <Link
+                            to="/leaderboard"
+                            className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        >
+                            Leaderboard
+                        </Link>
+                        <Link
+                            to="/setting"
+                            className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        >
+                            Setting
+                        </Link>
+
+                        <button
+                            onClick={toggleDarkMode}
+                            className="dark:text-white text-black hover:underline decoration-2 flex items-center justify-center gap-5 dark:decoration-white decoration-black"
                         >
                             <img
                                 src={
-                                    userData.profilePhotoUrl ||
-                                    "/images/placeholder.png"
+                                    darkMode
+                                        ? "/images/light_mode.svg"
+                                        : "/images/dark_mode.svg"
                                 }
-                                alt="Profile Picture"
-                                className="w-10 h-10 rounded-full"
+                                className="w-8 h-8"
                             />
-                            <h1 className="font-bold">{userData.username}</h1>
-                        </Link>
+                            <p>{darkMode ? "Light Mode" : "Dark Mode"}</p>
+                            <img
+                                src={
+                                    darkMode
+                                        ? "/images/light_mode.svg"
+                                        : "/images/dark_mode.svg"
+                                }
+                                className="w-8 h-8"
+                            />
+                        </button>
                     </div>
-                    <Link
-                        to="/"
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
-                    >
-                        Home
-                    </Link>
-                    <Link
-                        to="/upload"
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
-                    >
-                        Upload
-                    </Link>
-                    <Link
-                        to="/leaderboard"
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
-                    >
-                        Leaderboard
-                    </Link>
-                    <Link
-                        to="/setting"
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
-                    >
-                        Setting
-                    </Link>
-                    <button
-                        onDoubleClick={handleSignOut}
-                        className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
-                    >
-                        Sign Out
-                    </button>
-                    <button
-                        onClick={toggleDarkMode}
-                        className="dark:text-white text-black hover:underline decoration-2 flex items-center justify-center gap-5 dark:decoration-white decoration-black"
-                    >
-                        <img
-                            src={
-                                darkMode
-                                    ? "/images/light_mode.svg"
-                                    : "/images/dark_mode.svg"
-                            }
-                            className="w-8 h-8"
-                        />
-                        <p>{darkMode ? "Light Mode" : "Dark Mode"}</p>
-                        <img
-                            src={
-                                darkMode
-                                    ? "/images/light_mode.svg"
-                                    : "/images/dark_mode.svg"
-                            }
-                            className="w-8 h-8"
-                        />
-                    </button>
+
+                    <div className="flex items-center justify-center">
+                        <button
+                            onClick={handleSignOut}
+                            className="dark:text-white text-black hover:underline decoration-2 dark:decoration-white decoration-black"
+                        >
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
             ) : (
                 <div className="flex gap-10 items-center justify-around">

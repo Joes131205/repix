@@ -142,7 +142,8 @@ function Upload() {
                     transition: Bounce,
                 });
             }
-            incrementUpload();
+            await incrementUpload();
+            window.location.reload();
         }
     }
 

@@ -27,6 +27,8 @@ function Root() {
     const { userData } = useContext(UserDataContext);
 
     async function fetchRandomPhoto() {
+        setCurrentPhoto({});
+
         setIsLoading(true);
         setAttempts(0);
 
@@ -67,22 +69,27 @@ function Root() {
         }
     }
 
-    function getRandomPhotoWithoutDuplicates(data) {
-        let attempts = 0;
-        while (attempts < data.length) {
+    function getRandomPhotoWithoutDuplicates(data, userData) {
+        const excludedPhotos = [];
+
+        while (excludedPhotos.length < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
+
             if (!photo?.photoUrl) continue;
 
             if (
                 photo.uid !== userData.uid &&
                 !photo.rated.includes(userData.uid) &&
-                !userData.ratedPhotos.find((id) => id === photo.id)
+                !userData.ratedPhotos.find((id) => id === photo.id) &&
+                !excludedPhotos.includes(photo.id)
             ) {
                 return photo;
             }
-            attempts++;
+
+            excludedPhotos.push(photo.id);
         }
+
         return null;
     }
 
@@ -202,6 +209,8 @@ function Root() {
     }
 
     useEffect(() => {
+        setCurrentPhoto({});
+
         fetchRandomPhoto();
     }, []);
 
