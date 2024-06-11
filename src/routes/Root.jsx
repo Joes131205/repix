@@ -36,7 +36,6 @@ function Root() {
 
         try {
             const querySnapshot = await getDocs(photosCollection);
-
             if (querySnapshot.empty) {
                 setIsLoading(false);
                 return;
@@ -50,12 +49,13 @@ function Root() {
                     setError("Error occurred while fetching photo, try again!");
                 }
             }
-
             const photo = getRandomPhotoWithoutDuplicates(
                 filteredData,
                 userData.uid
             );
+            console.log(photo);
             if (photo) {
+                console.log(photo);
                 setCurrentPhoto(photo);
             } else {
                 setCurrentPhoto({});
@@ -75,13 +75,17 @@ function Root() {
         while (excludedPhotos.length < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
-
             if (!photo?.photoUrl) continue;
-
+            console.log(
+                photo.uid !== userData.uid &&
+                    !photo.rated.includes(userData.uid) &&
+                    !userData.ratedPhotos.includes(userData.uid) &&
+                    !excludedPhotos.includes(photo.id)
+            );
             if (
                 photo.uid !== userData.uid &&
                 !photo.rated.includes(userData.uid) &&
-                !userData.ratedPhotos.find((id) => id === photo.id) &&
+                !userData.ratedPhotos.includes(userData.uid) &&
                 !excludedPhotos.includes(photo.id)
             ) {
                 return photo;
@@ -215,7 +219,7 @@ function Root() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center gap-10 mt-10">
+        <div className="flex flex-col items-center justify-center gap-10 h-screen">
             {userData.totalPhotosDaily.rated > 2 ? (
                 <p>
                     Reached a maximum amount of photos rated for today (3), come

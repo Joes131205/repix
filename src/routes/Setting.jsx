@@ -44,10 +44,35 @@ function Setting() {
     }
 
     async function changeProfilePicture(image) {
-        try {
-            const storageRef = ref(storage, `profile-pictures/${image.name}`);
-            await uploadBytes(storageRef, image);
-            toast.success("Changed Profile Picture!", {
+        if (profilePicture) {
+            try {
+                const storageRef = ref(
+                    storage,
+                    `profile-pictures/${image.name}`
+                );
+                await uploadBytes(storageRef, image);
+                toast.success("Changed Profile Picture!", {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Bounce,
+                });
+                const userRef = doc(db, "users", userData.uid);
+                const profilePictureUrl = await getDownloadURL(storageRef);
+
+                await updateDoc(userRef, {
+                    profilePhotoUrl: profilePictureUrl,
+                });
+            } catch (error) {
+                setError(error);
+            }
+        } else {
+            toast.error("Please provide a valid profile picture!", {
                 position: "bottom-right",
                 autoClose: 5000,
                 hideProgressBar: true,
@@ -58,14 +83,6 @@ function Setting() {
                 theme: "colored",
                 transition: Bounce,
             });
-            const userRef = doc(db, "users", userData.uid);
-            const profilePictureUrl = await getDownloadURL(storageRef);
-
-            await updateDoc(userRef, {
-                profilePhotoUrl: profilePictureUrl,
-            });
-        } catch (error) {
-            setError(error);
         }
     }
 
@@ -100,13 +117,13 @@ function Setting() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center h-full gap-10">
+        <div className="flex flex-col items-center justify-center h-screen gap-10">
             <h1 className="font-bold text-2xl">Setting</h1>
             <div className="w-screen flex flex-col items-center gap-10 justify-center">
                 <img
                     src={profilePictureReview || "/images/placeholder.png"}
                     alt="Profile Picture"
-                    className="w-10 h-10 rounded-full"
+                    className="w-32 h-32 rounded-full"
                 />
             </div>
             <div className="w-screen flex flex-col items-center gap-2 justify-center">

@@ -27,7 +27,7 @@ function Leaderboard() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center gap-12">
+        <div className="flex flex-col items-center justify-center gap-12 h-screen">
             <h1 className="font-bold text-2xl">Leaderboard</h1>
 
             <table className="w-[40%] table-auto">
@@ -46,7 +46,7 @@ function Leaderboard() {
                                 key={i}
                                 className={`${
                                     i === 0
-                                        ? "dark:bg-yellow-800 bg-yellow-300"
+                                        ? "dark:bg-yellow-700 bg-yellow-300"
                                         : i === 1
                                         ? "dark:bg-slate-600 bg-slate-400"
                                         : i === 2

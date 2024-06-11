@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { db, storage, auth } from "../firebase";
+import { auth } from "../firebase";
 import { useState, useEffect, useContext } from "react";
 import { UserDataContext } from "../components/UserDataContext";
 
@@ -35,9 +35,9 @@ function NavBar({ isLoggedIn, onSignoutSuccess }) {
     }
 
     return (
-        <div className="flex items-center  sticky bg-gray-200 h-12 px-5 mb-2 dark:bg-[#333333] w-screen">
+        <div className="flex items-center fixed bg-gray-200 dark:bg-[#333333] w-screen h-auto py-2 top-0">
             {isLoggedIn ? (
-                <div className="flex justify-between gap-20 w-screen ml-5 mr-5">
+                <div className="flex justify-between gap-20 w-screen px-10">
                     <div className="flex gap-12 items-center justify-center">
                         <div>
                             <Link
@@ -116,7 +116,7 @@ function NavBar({ isLoggedIn, onSignoutSuccess }) {
                     </div>
                 </div>
             ) : (
-                <div className="flex gap-10 items-center justify-around">
+                <div className="flex gap-20 w-screen px-5 items-center">
                     <h1 className="font-bold">Repix</h1>
                     <Link
                         to="/signin"

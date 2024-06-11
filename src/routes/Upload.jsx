@@ -37,14 +37,13 @@ function Upload() {
                 today.getDate() !==
                     new Date(data.totalPhotosDaily.timeLastUploaded).getDate();
             if (isNewDay) {
-                data.totalPhotosDaily.uploaded = 0;
+                data.totalPhotosDaily.lastUploaded = 0;
                 data.totalPhotosDaily.timeLastUploaded = today.toISOString();
             }
             await updateDoc(docRef, {
-                totalPhotosRated: data.totalPhotosRated + 1,
                 totalPhotosDaily: {
                     ...data.totalPhotosDaily,
-                    uploaded: data.totalPhotosDaily.uploaded + 1,
+                    lastUploaded: data.totalPhotosDaily.lastUploaded + 1,
                     timeLastUploaded: data.totalPhotosDaily.timeLastUploaded,
                 },
             });
@@ -64,7 +63,7 @@ function Upload() {
     }
 
     async function uploadPhoto() {
-        if (userData.totalPhotosDaily.uploaded > 2) {
+        if (userData.totalPhotosDaily.lastUploaded > 2) {
             toast.error(
                 "You have already uploaded 3 photos today. Try again tomorrow.",
                 {
@@ -112,12 +111,6 @@ function Upload() {
                     rated: [],
                     comments: [],
                 });
-                updateUserData({
-                    totalPhotosDaily: {
-                        uploaded: userData.totalPhotosDaily.uploaded + 1,
-                        timeLastUploaded: new Date().toISOString(),
-                    },
-                });
                 toast.success("Uploaded!", {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -143,7 +136,8 @@ function Upload() {
                 });
             }
             await incrementUpload();
-            window.location.reload();
+            setPhotoReview("");
+            setPhoto("");
         }
     }
 
@@ -164,7 +158,7 @@ function Upload() {
         setPhoto(newBlob);
     }
     return (
-        <div className=" flex flex-col items-center justify-center gap-10">
+        <div className="flex flex-col items-center justify-center gap-10 h-screen">
             {userData.totalPhotosDaily.uploaded > 2 ? (
                 <p>
                     Reached maximum amount of photos you can upload for today,
@@ -179,16 +173,22 @@ function Upload() {
                         onChange={previewImage}
                         accept="image/png"
                     />
-                    <img
-                        src={photoReview || "/images/placeholder.png"}
-                        className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500"
-                    />
-                    <button
-                        onClick={uploadPhoto}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
-                    >
-                        Upload!
-                    </button>
+                    {photoReview ? (
+                        <>
+                            <img
+                                src={photoReview}
+                                className="w-96 h-96 max-w-96 max-h-96 rounded-md border-4 border-black dark:border-gray-500"
+                            />
+                            <button
+                                onClick={uploadPhoto}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer transition"
+                            >
+                                Upload!
+                            </button>
+                        </>
+                    ) : (
+                        ""
+                    )}
                 </>
             )}
         </div>

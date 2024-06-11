@@ -42,8 +42,8 @@ function SignUp(prop) {
                 reputation: 0,
                 totalPhotosRated: 0,
                 totalPhotosDaily: {
-                    rated: 0,
-                    uploaded: 0,
+                    lastRated: 0,
+                    lastUploaded: 0,
                     timeLastRated: "",
                     timeLastUploaded: "",
                 },

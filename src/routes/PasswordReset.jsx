@@ -28,7 +28,7 @@ function PasswordReset() {
         }
     }
     return (
-        <div className="flex flex-col text-center items-center justify-center gap-10">
+        <div className="flex flex-col text-center items-center justify-center gap-10 h-screen">
             <h1 className="text-2xl font-bold mb-2">Reset Password</h1>
             <p>Enter your email to receive a password reset link.</p>
             <input
