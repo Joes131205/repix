@@ -36,6 +36,7 @@ function Root() {
 
         try {
             const querySnapshot = await getDocs(photosCollection);
+            console.log(querySnapshot);
             if (querySnapshot.empty) {
                 setIsLoading(false);
                 return;
@@ -49,6 +50,7 @@ function Root() {
                     setError("Error occurred while fetching photo, try again!");
                 }
             }
+            console.log(filteredData);
             const photo = getRandomPhotoWithoutDuplicates(
                 filteredData,
                 userData.uid
@@ -62,7 +64,7 @@ function Root() {
                 return;
             }
         } catch (error) {
-            setError("Error occurred while fetching photo, try again!");
+            setError("Error occurred while fetching photo, try again!" + error);
         } finally {
             setIsLoading(false);
             setAttempts(attempts + 1);
@@ -75,28 +77,21 @@ function Root() {
         while (excludedPhotos.length < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
-            if (!photo?.photoUrl) continue;
-            console.log(
-                photo.uid !== userData.uid &&
-                    !photo.rated.includes(userData.uid) &&
-                    !userData.ratedPhotos.includes(userData.uid) &&
-                    !excludedPhotos.includes(photo.id)
-            );
+
+            const hasRated =
+                userData.ratedPhotos && userData.ratedPhotos.includes(photo.id);
             if (
                 photo.uid !== userData.uid &&
-                !photo.rated.includes(userData.uid) &&
-                !userData.ratedPhotos.includes(userData.uid) &&
+                !hasRated &&
+                (!photo.rated || !photo.rated.includes(userData.uid)) &&
                 !excludedPhotos.includes(photo.id)
             ) {
                 return photo;
             }
-
             excludedPhotos.push(photo.id);
         }
-
         return null;
     }
-
     async function updatePhoto(data) {
         const ref = doc(db, "photos", currentPhoto.id);
         try {
@@ -123,7 +118,7 @@ function Root() {
                 today.getDate() !==
                     new Date(data.totalPhotosDaily.timeLastRated).getDate();
             if (isNewDay) {
-                data.totalPhotosDaily.rated = 0;
+                data.totalPhotosDaily.lastRated = 0;
                 data.totalPhotosDaily.timeLastRated = today.toISOString();
             }
 
@@ -131,7 +126,7 @@ function Root() {
                 totalPhotosRated: data.totalPhotosRated + 1,
                 totalPhotosDaily: {
                     ...data.totalPhotosDaily,
-                    rated: data.totalPhotosDaily.rated + 1,
+                    lastRated: data.totalPhotosDaily.lastRated + 1,
                     timeLastRated: data.totalPhotosDaily.timeLastRated,
                 },
                 ratedPhotos: [...(data.ratedPhotos || []), currentPhoto.id],
@@ -155,7 +150,7 @@ function Root() {
     }
 
     async function rate() {
-        if (userData.totalPhotosDaily.rated > 2) {
+        if (userData.totalPhotosDaily.lastRated > 2) {
             toast.error(
                 "You have already rated 3 photos today. Try again tomorrow.",
                 {
@@ -214,13 +209,12 @@ function Root() {
 
     useEffect(() => {
         setCurrentPhoto({});
-
         fetchRandomPhoto();
     }, []);
 
     return (
         <div className="flex flex-col items-center justify-center gap-10 h-screen">
-            {userData.totalPhotosDaily.rated > 2 ? (
+            {userData.totalPhotosDaily.lastRated > 2 ? (
                 <p>
                     Reached a maximum amount of photos rated for today (3), come
                     back tomorrow!
@@ -239,10 +233,12 @@ function Root() {
                         Rate!
                     </button>
                     <Comment photo={currentPhoto} uid={userData.uid} />
-                    <p className="text-red-800">{error}</p>
                 </>
             ) : (
-                <p>No photos left :(</p>
+                <>
+                    <p className="text-red-800">{error}</p>
+                    <p>No photos left :(</p>
+                </>
             )}
         </div>
     );
