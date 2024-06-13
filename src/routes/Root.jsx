@@ -27,6 +27,7 @@ function Root() {
     const { userData } = useContext(UserDataContext);
 
     async function fetchRandomPhoto() {
+        setError("");
         setCurrentPhoto({});
 
         setIsLoading(true);
@@ -36,7 +37,6 @@ function Root() {
 
         try {
             const querySnapshot = await getDocs(photosCollection);
-            console.log(querySnapshot);
             if (querySnapshot.empty) {
                 setIsLoading(false);
                 return;
@@ -47,50 +47,52 @@ function Root() {
                 if (doc.exists) {
                     filteredData.push({ ...doc.data(), id: doc.id });
                 } else {
-                    setError("Error occurred while fetching photo, try again!");
+                    throw Error(
+                        "Error occurred while fetching photo, try again!"
+                    );
                 }
             }
-            console.log(filteredData);
             const photo = getRandomPhotoWithoutDuplicates(
                 filteredData,
-                userData.uid
+                userData.uid,
+                userData.ratedPhotos
             );
-            console.log(photo);
             if (photo) {
-                console.log(photo);
                 setCurrentPhoto(photo);
             } else {
                 setCurrentPhoto({});
                 return;
             }
         } catch (error) {
-            setError("Error occurred while fetching photo, try again!" + error);
+            setError(error);
         } finally {
             setIsLoading(false);
             setAttempts(attempts + 1);
         }
     }
 
-    function getRandomPhotoWithoutDuplicates(data, userData) {
+    function getRandomPhotoWithoutDuplicates(data, user, ratedPhotos) {
+        setCurrentPhoto({});
         const excludedPhotos = [];
 
         while (excludedPhotos.length < data.length) {
             const randomIndex = Math.floor(Math.random() * data.length);
             const photo = data[randomIndex];
-
-            const hasRated =
-                userData.ratedPhotos && userData.ratedPhotos.includes(photo.id);
             if (
-                photo.uid !== userData.uid &&
-                !hasRated &&
-                (!photo.rated || !photo.rated.includes(userData.uid)) &&
+                photo.uid !== user &&
+                (ratedPhotos === undefined ||
+                    !ratedPhotos.includes(photo.id)) &&
+                (!photo.rated || !photo.rated.includes(user)) &&
                 !excludedPhotos.includes(photo.id)
             ) {
                 return photo;
+            } else {
             }
+            data.splice(randomIndex, 1);
+
             excludedPhotos.push(photo.id);
         }
-        return null;
+        return {};
     }
     async function updatePhoto(data) {
         const ref = doc(db, "photos", currentPhoto.id);
@@ -150,9 +152,9 @@ function Root() {
     }
 
     async function rate() {
-        if (userData.totalPhotosDaily.lastRated > 2) {
+        if (userData.totalPhotosDaily.lastRated > 9) {
             toast.error(
-                "You have already rated 3 photos today. Try again tomorrow.",
+                "You have already rated 10 photos today. Try again tomorrow.",
                 {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -210,14 +212,14 @@ function Root() {
     useEffect(() => {
         setCurrentPhoto({});
         fetchRandomPhoto();
-    }, []);
+    }, [userData]);
 
     return (
         <div className="flex flex-col items-center justify-center gap-10 h-screen">
-            {userData.totalPhotosDaily.lastRated > 2 ? (
+            {userData.totalPhotosDaily.lastRated > 9 ? (
                 <p>
-                    Reached a maximum amount of photos rated for today (3), come
-                    back tomorrow!
+                    Reached a maximum amount of photos rated for today (10),
+                    come back tomorrow!
                 </p>
             ) : isLoading ? (
                 <div>Loading...</div>
