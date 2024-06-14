@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 function Stars(prop) {
     const stars = new Array(5).fill("★");
     return (

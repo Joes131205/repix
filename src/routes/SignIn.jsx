@@ -1,17 +1,15 @@
 import { db, storage, auth } from "../firebase";
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 import {
-    onAuthStateChanged,
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
-    sendPasswordResetEmail,
 } from "firebase/auth";
 
 import { setDoc, doc, getDoc } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -58,20 +56,6 @@ function SignIn(prop) {
                 });
                 prop.onSigninSuccess();
             } else {
-                await setDoc(docRef, {
-                    username: `user_${uid.slice(1, 5)}`,
-                    uploaded: 0,
-                    reputation: 0,
-                    bestRatedPhoto: "",
-                    totalPhotosRated: 0,
-                    ratedPhotos: [],
-                    totalPhotosDaily: {
-                        rated: 0,
-                        uploaded: 0,
-                        timeLastRated: "",
-                        timeLastUploaded: "",
-                    },
-                });
                 const image = "/images/default_profile_picture.png";
                 const response = await fetch(image);
 
@@ -82,8 +66,32 @@ function SignIn(prop) {
                         storage,
                         `profile-pictures/${newFileName}`
                     );
-                    const metadata = { contentType: "image/png" };
-                    await uploadBytes(storageRef, blob, metadata);
+                    const metadata = {
+                        contentType: "image/png",
+                    };
+                    const uploadTask = uploadBytes(storageRef, blob, metadata);
+                    await uploadTask;
+
+                    const downloadURL = await getDownloadURL(storageRef);
+
+                    await setDoc(docRef, {
+                        username: `user_${uid.slice(1, 5)}`,
+                        uploaded: 0,
+                        reputation: 0,
+                        totalPhotosRated: 0,
+                        totalPhotosDaily: {
+                            lastRated: 0,
+                            lastUploaded: 0,
+                            timeLastRated: "",
+                            timeLastUploaded: "",
+                        },
+                        ratedPhotos: [],
+                        profilePhotoUrl: downloadURL,
+                        uid,
+                    });
+                    prop.onSigninSuccess();
+                    navigate("/");
+                    window.location.reload();
                 } else {
                     throw new Error(
                         "Failed to fetch default profile picture:",
@@ -91,10 +99,8 @@ function SignIn(prop) {
                     );
                 }
             }
-            prop.onSignupSuccess();
-            navigate("/");
-            window.location.reload();
         } catch (error) {
+            console.log(error);
             setError("Error signing in with Google. Please try again.");
         }
     }
@@ -115,9 +121,10 @@ function SignIn(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            prop.onSignupSuccess();
-            navigate("/");
             window.location.reload();
+
+            prop.onSigninSuccess();
+            navigate("/");
         } catch (error) {
             const errorCode = error.code;
             let errorMessage = "";

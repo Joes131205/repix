@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CommentUser from "../components/CommentUser";
 
-import { db, storage, auth } from "../firebase";
+import { db } from "../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { toast, Bounce } from "react-toastify";
 

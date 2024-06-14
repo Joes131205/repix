@@ -9,9 +9,9 @@ import {
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 
-import { db, storage, auth } from "../firebase";
+import { db, storage } from "../firebase";
 
 import { toast, Bounce } from "react-toastify";
 

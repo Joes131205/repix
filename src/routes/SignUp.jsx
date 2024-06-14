@@ -104,17 +104,7 @@ function SignUp(prop) {
                             profilePhotoUrl
                         );
                         await sendEmailVerification(user);
-                        toast.success("Signed Up! Email verification sent!", {
-                            position: "bottom-right",
-                            autoClose: 5000,
-                            hideProgressBar: true,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "colored",
-                            transition: Bounce,
-                        });
+
                         prop.onSignupSuccess();
                         navigate("/");
                         window.location.reload();

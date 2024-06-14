@@ -44,7 +44,7 @@ function PasswordReset() {
             >
                 Send Email
             </button>
-            <p>{error}</p>
+            <p className="text-red-600">{error}</p>
         </div>
     );
 }

@@ -2,7 +2,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 
-import { db, storage, auth } from "../firebase";
+import { db, storage } from "../firebase";
 
 function CommentUser(prop) {
     const [username, setUsername] = useState("");
