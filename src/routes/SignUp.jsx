@@ -106,6 +106,7 @@ function SignUp(prop) {
                         await sendEmailVerification(user);
 
                         prop.onSignupSuccess();
+                        window.location.reload();
                         navigate("/");
                     })
                     .catch((error) => {
