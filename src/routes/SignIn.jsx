@@ -1,6 +1,6 @@
 import { db, storage, auth } from "../firebase";
 
-import {  useState } from "react";
+import { useState } from "react";
 
 import {
     signInWithEmailAndPassword,
@@ -91,7 +91,6 @@ function SignIn(prop) {
                     });
                     prop.onSigninSuccess();
                     navigate("/");
-                    window.location.reload();
                 } else {
                     throw new Error(
                         "Failed to fetch default profile picture:",
@@ -121,7 +120,6 @@ function SignIn(prop) {
                 theme: "colored",
                 transition: Bounce,
             });
-            window.location.reload();
 
             prop.onSigninSuccess();
             navigate("/");
@@ -190,7 +188,6 @@ function SignIn(prop) {
             >
                 Forget password?
             </Link>
-            <p className="text-red-600">{error}</p>
             <button
                 onClick={signInUserWithGoogle}
                 className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
@@ -208,6 +205,8 @@ function SignIn(prop) {
                     className="w-5 h-5"
                 />{" "}
             </button>
+            <p className="text-red-600">{error}</p>
+
             <Link to="/signup" className="underline text-blue-400">
                 Don't have an account?
             </Link>

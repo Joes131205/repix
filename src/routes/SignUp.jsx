@@ -107,7 +107,6 @@ function SignUp(prop) {
 
                         prop.onSignupSuccess();
                         navigate("/");
-                        window.location.reload();
                     })
                     .catch((error) => {
                         const errorCode = error.code;
@@ -173,7 +172,6 @@ function SignUp(prop) {
             });
             prop.onSignupSuccess();
             navigate("/");
-            window.location.reload();
         } catch (error) {
             console.log(error);
             const errorCode = error.code;
