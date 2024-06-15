@@ -172,6 +172,8 @@ function SignUp(prop) {
                 transition: Bounce,
             });
             prop.onSignupSuccess();
+            window.location.reload();
+
             navigate("/");
         } catch (error) {
             console.log(error);

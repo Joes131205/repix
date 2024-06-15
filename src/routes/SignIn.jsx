@@ -90,6 +90,8 @@ function SignIn(prop) {
                         uid,
                     });
                     prop.onSigninSuccess();
+                    window.location.reload();
+
                     navigate("/");
                 } else {
                     throw new Error(
